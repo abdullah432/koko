@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "762608185270",
+    "firebase_url": "https://koko-b49ec.firebaseio.com",
+    "project_id": "koko-b49ec",
+    "storage_bucket": "koko-b49ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762608185270:android:2de2f56830abf70e25db17",
+        "android_client_info": {
+          "package_name": "com.kotostudio.koko"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762608185270-sb3eqvlsuak0vcdcduui3ilibuf1m34t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kotostudio.koko",
+            "certificate_hash": "ff91751c1bb26a8e1a015c39dcb686899e09c813"
+          }
+        },
+        {
+          "client_id": "762608185270-8r48ol5h4or0eskvmb4cvdm6u3tevk1m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo8bpgbd4QklRFIEJQmsYYOjFpE1WYy80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762608185270-8r48ol5h4or0eskvmb4cvdm6u3tevk1m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
