@@ -14,7 +14,7 @@ class Constant {
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
 
   //user name
-  static String name;
+  static String username;
 
   //functions
   static DateTime getActiveStoryDate(String value) {
@@ -63,7 +63,7 @@ class Constant {
     final colorIndex = prefs.getInt('colorIndex') ?? 0;
     //Now initialize selectedColor
     Constant.selectedColor = Constant.listOfColors[colorIndex];
-    Constant.name = username;
+    Constant.username = username;
 
     if (username.isNotEmpty)
       return true;

@@ -2,8 +2,8 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:koko/model/GlobalData.dart';
-import 'package:koko/model/PhotoHero.dart';
+import 'package:koko/utils/GlobalData.dart';
+import 'package:koko/widgets/PhotoHero.dart';
 import 'package:koko/utils/constant.dart';
 
 import 'feeling.dart';
@@ -46,7 +46,7 @@ class AddStoryState extends State<AddStory> {
                 width: 80,
               ),
             ),
-            Text('Good ${Constant.greeting()} ${Constant.name}',
+            Text('Good ${Constant.greeting()} ${Constant.username}',
                 style: TextStyle(
                     fontSize: 22,
                     color: Colors.white,

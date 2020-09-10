@@ -1,7 +1,6 @@
-import 'package:koko/model/GlobalData.dart';
-import 'package:koko/model/PhotoHero.dart';
+import 'package:koko/utils/GlobalData.dart';
+import 'package:koko/widgets/PhotoHero.dart';
 import 'package:koko/screens/note.dart';
-import 'package:koko/screens/saveStory.dart';
 import 'package:koko/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

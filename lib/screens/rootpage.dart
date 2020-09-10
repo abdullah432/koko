@@ -15,9 +15,9 @@ class RootPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<String> snapshot){
         if (snapshot.connectionState == ConnectionState.active){
           final bool isLoggedIn = snapshot.hasData;
-          // String data = snapshot.data;
-          // debugPrint('data: '+data.toString());
-          return isLoggedIn ? HomePage() : LoginPage();
+          String uid = snapshot.data;
+          // debugPrint('data: '+uid.toString());
+          return isLoggedIn ? HomePage(useruid: uid,) : LoginPage();
         }
         return _buildWaitingScreen(context);
         //should return splash screen here

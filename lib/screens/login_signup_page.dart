@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
 
   final FocusNode myFocusNodeEmailLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
@@ -44,70 +45,75 @@ class _LoginPageState extends State<LoginPage>
   Color left = Colors.black;
   Color right = Colors.white;
 
+  //by default error text will be hidden
+  bool loginErrorVisibility = false;
+  bool signupErrorVisibility = false;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overscroll) {
-          overscroll.disallowGlow();
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height >= 775.0
-                ? MediaQuery.of(context).size.height
-                : 775.0,
-            color: Constant.selectedColor,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 75.0),
-                  child: new Image(
-                      width: 80.0,
-                      height: 80.0,
-                      fit: BoxFit.cover,
-                      image: new AssetImage('images/logo.png')),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: _buildMenuBar(context),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (i) {
-                      if (i == 0) {
-                        setState(() {
-                          right = Colors.white;
-                          left = Colors.black;
-                        });
-                      } else if (i == 1) {
-                        setState(() {
-                          right = Colors.black;
-                          left = Colors.white;
-                        });
-                      }
-                    },
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+          },
+          child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height >= 775.0
+                      ? MediaQuery.of(context).size.height
+                      : 775.0,
+                  color: Constant.selectedColor,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      new ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: _buildSignIn(context),
+                      Padding(
+                        padding: EdgeInsets.only(top: 75.0),
+                        child: new Image(
+                            width: 80.0,
+                            height: 80.0,
+                            fit: BoxFit.cover,
+                            image: new AssetImage('images/logo.png')),
                       ),
-                      new ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: _buildSignUp(context),
+                      Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                        child: _buildMenuBar(context),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: (i) {
+                            if (i == 0) {
+                              setState(() {
+                                right = Colors.white;
+                                left = Colors.black;
+                              });
+                            } else if (i == 1) {
+                              setState(() {
+                                right = Colors.black;
+                                left = Colors.white;
+                              });
+                            }
+                          },
+                          children: <Widget>[
+                            new ConstrainedBox(
+                              constraints: const BoxConstraints.expand(),
+                              child: _buildSignIn(context),
+                            ),
+                            new ConstrainedBox(
+                              constraints: const BoxConstraints.expand(),
+                              child: _buildSignUp(context),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ))),
     );
   }
 
@@ -216,15 +222,20 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Container(
                   width: 300.0,
-                  height: 190.0,
-                  child: Column(
+                  height: 210.0,
+                  child: SingleChildScrollView(child:  Column(
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
+                        child: TextFormField(
                           focusNode: myFocusNodeEmailLogin,
                           controller: loginEmailController,
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return "This field can't be empty";
+                            return null;
+                          },
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -247,10 +258,15 @@ class _LoginPageState extends State<LoginPage>
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
+                        child: TextFormField(
                           focusNode: myFocusNodePasswordLogin,
                           controller: loginPasswordController,
                           obscureText: _obscureTextLogin,
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return "This field can't be empty";
+                            return null;
+                          },
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -276,10 +292,11 @@ class _LoginPageState extends State<LoginPage>
                       ),
                     ],
                   ),
+                  ),
                 ),
               ),
               Card(
-                margin: EdgeInsets.only(top: 170.0),
+                margin: EdgeInsets.only(top: 190.0),
                 color: Constant.selectedColor,
                 elevation: 4.0,
                 child: MaterialButton(
@@ -296,10 +313,11 @@ class _LoginPageState extends State<LoginPage>
                         ),
                       ),
                     ),
-                    onPressed: () => showInSnackBar("Login button pressed")),
+                    onPressed: () => loginButtonPressed()),
               ),
             ],
           ),
+          loginErrorVisibility ? errorTextWidget() : Container(),
           orSeperatorWidget(),
           fgAccounts(),
         ],
@@ -324,15 +342,20 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Container(
                   width: 300.0,
-                  height: 360.0,
+                  height: 290.0,
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
+                        child: TextFormField(
                           focusNode: myFocusNodeName,
                           controller: signupNameController,
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return "This field can't be empty";
+                            return null;
+                          },
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
@@ -355,9 +378,14 @@ class _LoginPageState extends State<LoginPage>
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
+                        child: TextFormField(
                           focusNode: myFocusNodeEmail,
                           controller: signupEmailController,
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return "This field can't be empty";
+                            return null;
+                          },
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -379,9 +407,14 @@ class _LoginPageState extends State<LoginPage>
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
+                        child: TextFormField(
                           focusNode: myFocusNodePassword,
                           controller: signupPasswordController,
+                          validator: (value) {
+                            if (value.isEmpty)
+                              return "This field can't be empty";
+                            return null;
+                          },
                           obscureText: _obscureTextSignup,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
@@ -405,45 +438,12 @@ class _LoginPageState extends State<LoginPage>
                           ),
                         ),
                       ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          controller: signupConfirmPasswordController,
-                          obscureText: _obscureTextSignupConfirm,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FlutterIcons.lock_faw5s,
-                              color: Colors.black,
-                            ),
-                            hintText: "Confirm",
-                            hintStyle: TextStyle(fontSize: 16.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleSignupConfirm,
-                              child: Icon(
-                                _obscureTextSignupConfirm
-                                    ? FlutterIcons.eye_faw5
-                                    : FlutterIcons.eye_slash_faw5,
-                                size: 15.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
               ),
               Card(
-                margin: EdgeInsets.only(top: 340.0),
+                margin: EdgeInsets.only(top: 270.0),
                 color: Constant.selectedColor,
                 elevation: 4,
                 child: MaterialButton(
@@ -457,18 +457,25 @@ class _LoginPageState extends State<LoginPage>
                         "SIGN UP",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
+                            fontSize: 25.0),
                       ),
                     ),
-                    onPressed: () => showInSnackBar("SignUp button pressed")),
+                    onPressed: () => singupButtonPressed()),
               ),
             ],
           ),
+          signupErrorVisibility ? errorTextWidget() : Container(),
           orSeperatorWidget(),
           fgAccounts(),
         ],
       ),
+    );
+  }
+
+  errorTextWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Text('Email or Password is wrong', style: TextStyle(color: Colors.red))
     );
   }
 
@@ -606,8 +613,6 @@ class _LoginPageState extends State<LoginPage>
   void signInWithGoogle() async {
     BaseAuth auth = new Auth();
     String uid = await auth.signInWithGoogle();
-    Navigator.pushReplacement(
-        context, new MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   void signInWithFacebook() async {
@@ -615,8 +620,50 @@ class _LoginPageState extends State<LoginPage>
     String uid = await auth.signInWithFacebook();
     print('facebook uid: ' + uid);
     if (uid != 'canceled' && uid != 'error' && uid != null) {
-      Navigator.pushReplacement(
-          context, new MaterialPageRoute(builder: (context) => HomePage()));
+      navigateToHomePage(uid);
     }
+  }
+
+  //login and signup through gmail and password
+  loginButtonPressed() async {
+    if (_formKey.currentState.validate()) {
+      try{
+      BaseAuth auth = new Auth();
+      String uid = await auth.signIn(
+          loginEmailController.text, loginPasswordController.text);
+      print('uid: $uid');
+      if (uid != null) {
+navigateToHomePage(uid);
+      }
+      }
+      catch(error) {
+        print('error during signin: '+error.toString());
+        setState(() {
+          loginErrorVisibility = true;
+        });
+      }
+    }
+  }
+
+  singupButtonPressed() async{
+    if (_formKey.currentState.validate()) {
+      try{
+      BaseAuth auth = new Auth();
+      await auth.signUp(signupNameController.text,
+          signupEmailController.text, signupPasswordController.text);
+      }
+      catch(error) {
+        print('error during signin: '+error.toString());
+        setState(() {
+          loginErrorVisibility = true;
+        });
+      }
+    }
+  }
+
+  //navigation
+  navigateToHomePage(uid) {
+    Navigator.pushReplacement(
+        context, new MaterialPageRoute(builder: (context) => HomePage(useruid: uid,)));
   }
 }

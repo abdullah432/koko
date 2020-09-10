@@ -23,7 +23,7 @@ class SettingPageState extends State<SettingPage> {
 
   @override
   void initState() {
-    nameController.text = Constant.name;
+    nameController.text = Constant.username;
     super.initState();
   }
 
@@ -176,9 +176,9 @@ class SettingPageState extends State<SettingPage> {
     if (_formKey.currentState.validate()) {
       // obtain shared preferences
       final prefs = await SharedPreferences.getInstance();
-      if (Constant.name != nameController.text) {
+      if (Constant.username != nameController.text) {
         prefs.setString('name', nameController.text);
-        Constant.name = nameController.text;
+        Constant.username = nameController.text;
       }
       //if colorindex not equal to -1 that means user select new color
       if (colorIndex != -1) {

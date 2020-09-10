@@ -4,15 +4,18 @@ import 'package:koko/screens/add_story.dart';
 import 'package:koko/screens/settingpage.dart';
 import 'package:koko/screens/storydetail.dart';
 import 'package:koko/utils/constant.dart';
+import 'package:koko/utils/customfirestore.dart';
 import 'package:koko/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:koko/widgets/dropdownpopup.dart';
 
 class HomePage extends StatefulWidget {
+  final useruid;
+  HomePage({@required this.useruid});
   @override
   State<StatefulWidget> createState() {
-    return HomePageState();
+    return HomePageState(useruid);
   }
 }
 
@@ -27,8 +30,13 @@ class HomePageState extends State<HomePage> {
   double width;
   bool buttonDown = false;
 
+  CustomFirestore _customFirestore = CustomFirestore();
+  var useruid;
+  HomePageState(this.useruid);
+
   @override
   void initState() {
+    _customFirestore.loadUserName(userid: useruid);
     super.initState();
     pageController.addListener(() {
       int next = pageController.page.round();
@@ -75,16 +83,16 @@ class HomePageState extends State<HomePage> {
           top: 35.0,
           right: 12.0,
           child: GestureDetector(
-              onTap: () {
-                navigateToSettingPage();
-              },
-              child: CustomDropDownPopup(),
-              // Icon(
-              //   Icons.settings,
-              //   color: Constant.selectedColor,
-              //   size: 30,
-              // ),
-              )),
+            onTap: () {
+              navigateToSettingPage();
+            },
+            child: CustomDropDownPopup(),
+            // Icon(
+            //   Icons.settings,
+            //   color: Constant.selectedColor,
+            //   size: 30,
+            // ),
+          )),
     ]));
   }
 

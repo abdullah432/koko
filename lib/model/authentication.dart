@@ -9,7 +9,7 @@ abstract class BaseAuth {
   Future<String> signIn(String email, String password);
   Future<String> signInWithGoogle();
   Future<String> signInWithFacebook();
-  Future<String> signUp(String email, String password);
+  Future<void> signUp(String name, String email, String password);
   Future<User> getCurrentUser();
   Future<void> signOut();
   Future<void> sendEmailVerification();
@@ -60,7 +60,7 @@ class Auth implements BaseAuth {
         await _firebaseAuth.signInWithCredential(credential);
     final User user = userCredential.user;
     if (userCredential.additionalUserInfo.isNewUser) {
-      createRecord(user);
+      createRecord(user.displayName, user.uid);
     }
 
     return user.uid;
@@ -83,7 +83,7 @@ class Auth implements BaseAuth {
         final User user = userCredential.user;
 
         if (userCredential.additionalUserInfo.isNewUser) {
-          createRecord(user);
+          createRecord(user.displayName, user.uid);
         }
 
         return user.uid;
@@ -135,11 +135,10 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<String> signUp(String email, String password) async {
+  Future<void> signUp(String name, String email, String password) async {
     UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
-    User user = userCredential.user;
-    return user.uid;
+    createRecord(name, userCredential.user.uid);
   }
 
   @override
@@ -165,10 +164,9 @@ class Auth implements BaseAuth {
     return user.emailVerified;
   }
 
-  void createRecord(User userdata) async {
-    await db.collection("users").doc(userdata.uid).set({
-      'name': userdata.displayName,
-      'email': userdata.email,
+  void createRecord(name, uid) async {
+    await db.collection("users").doc(uid).set({
+      'name': name
     });
   }
 }

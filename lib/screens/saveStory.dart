@@ -1,5 +1,5 @@
-import 'package:koko/model/GlobalData.dart';
-import 'package:koko/model/PhotoHero.dart';
+import 'package:koko/utils/GlobalData.dart';
+import 'package:koko/widgets/PhotoHero.dart';
 import 'package:koko/model/Story.dart';
 import 'package:koko/screens/home_page.dart';
 import 'package:koko/utils/constant.dart';
