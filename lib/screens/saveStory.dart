@@ -1,9 +1,9 @@
 import 'package:koko/utils/GlobalData.dart';
+import 'package:koko/utils/customfirestore.dart';
 import 'package:koko/widgets/PhotoHero.dart';
 import 'package:koko/model/Story.dart';
 import 'package:koko/screens/home_page.dart';
 import 'package:koko/utils/constant.dart';
-import 'package:koko/utils/database_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +17,8 @@ class SaveStory extends StatefulWidget {
 class SaveStoryState extends State {
   double minimumPadding = 5.0;
   Story story;
-  DatabaseHelper databaseHelper = DatabaseHelper();
   TextEditingController titleConroller = TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,14 +129,31 @@ class SaveStoryState extends State {
   }
 
   void saveStory(BuildContext context) async {
-    story = new Story(GlobalData.title, GlobalData.date, GlobalData.feeling,
-        GlobalData.reason, GlobalData.whatHappened, GlobalData.note);
+    // story = new Story(GlobalData.title, GlobalData.date, GlobalData.feeling,
+    //     GlobalData.reason, GlobalData.whatHappened, GlobalData.note);
 
-    int result = await databaseHelper.insertStory(story);
-    if (result != 0) {
-      // showSnackBar(context, 'Story is Successfully added');
+    // int result = await databaseHelper.insertStory(story);
+    // if (result != 0) {
+    //   // showSnackBar(context, 'Story is Successfully added');
+    //   Navigator.push(
+    //       context, MaterialPageRoute(builder: (context) => HomePage()));
+    // }
+
+    CustomFirestore _customFirestore = CustomFirestore();
+    bool result = await _customFirestore.addStoryToFirestore(
+      title: GlobalData.title,
+      date: GlobalData.date,
+      feeling: GlobalData.feeling,
+      reason: GlobalData.reason,
+      whatHappened: GlobalData.whatHappened,
+      note: GlobalData.note,
+    );
+
+    if (result) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else {
+      showSnackBar(context, 'Fail, please try again');
     }
   }
 

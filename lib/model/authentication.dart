@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:koko/utils/constant.dart';
 
 abstract class BaseAuth {
   Stream<String> get onAuthStateChanged;
@@ -138,6 +139,7 @@ class Auth implements BaseAuth {
   Future<void> signUp(String name, String email, String password) async {
     UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
+    Constant.useruid = userCredential.user.uid;
     createRecord(name, userCredential.user.uid);
   }
 

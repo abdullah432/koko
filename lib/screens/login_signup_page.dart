@@ -223,75 +223,78 @@ class _LoginPageState extends State<LoginPage>
                 child: Container(
                   width: 300.0,
                   height: 210.0,
-                  child: SingleChildScrollView(child:  Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextFormField(
-                          focusNode: myFocusNodeEmailLogin,
-                          controller: loginEmailController,
-                          validator: (value) {
-                            if (value.isEmpty)
-                              return "This field can't be empty";
-                            return null;
-                          },
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FlutterIcons.envelope_faw5,
-                              color: Colors.black,
-                              size: 22.0,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextFormField(
+                            focusNode: myFocusNodeEmailLogin,
+                            controller: loginEmailController,
+                            validator: (value) {
+                              if (value.isEmpty)
+                                return "This field can't be empty";
+                              return null;
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FlutterIcons.envelope_faw5,
+                                color: Colors.black,
+                                size: 22.0,
+                              ),
+                              hintText: "Email Address",
+                              hintStyle: TextStyle(fontSize: 17.0),
                             ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(fontSize: 17.0),
                           ),
                         ),
-                      ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextFormField(
-                          focusNode: myFocusNodePasswordLogin,
-                          controller: loginPasswordController,
-                          obscureText: _obscureTextLogin,
-                          validator: (value) {
-                            if (value.isEmpty)
-                              return "This field can't be empty";
-                            return null;
-                          },
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FlutterIcons.lock_faw5s,
-                              size: 22.0,
-                              color: Colors.black,
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(fontSize: 17.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleLogin,
-                              child: Icon(
-                                _obscureTextLogin
-                                    ? FlutterIcons.eye_faw5
-                                    : FlutterIcons.eye_slash_faw5,
-                                size: 15.0,
+                        Container(
+                          width: 250.0,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextFormField(
+                            focusNode: myFocusNodePasswordLogin,
+                            controller: loginPasswordController,
+                            obscureText: _obscureTextLogin,
+                            validator: (value) {
+                              if (value.isEmpty)
+                                return "This field can't be empty";
+                              return null;
+                            },
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FlutterIcons.lock_faw5s,
+                                size: 22.0,
                                 color: Colors.black,
+                              ),
+                              hintText: "Password",
+                              hintStyle: TextStyle(fontSize: 17.0),
+                              suffixIcon: GestureDetector(
+                                onTap: _toggleLogin,
+                                child: Icon(
+                                  _obscureTextLogin
+                                      ? FlutterIcons.eye_faw5
+                                      : FlutterIcons.eye_slash_faw5,
+                                  size: 15.0,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -455,9 +458,7 @@ class _LoginPageState extends State<LoginPage>
                           vertical: 10.0, horizontal: 42.0),
                       child: Text(
                         "SIGN UP",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0),
+                        style: TextStyle(color: Colors.white, fontSize: 25.0),
                       ),
                     ),
                     onPressed: () => singupButtonPressed()),
@@ -474,9 +475,9 @@ class _LoginPageState extends State<LoginPage>
 
   errorTextWidget() {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Text('Email or Password is wrong', style: TextStyle(color: Colors.red))
-    );
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Text('Email or Password is wrong',
+            style: TextStyle(color: Colors.red)));
   }
 
   orSeperatorWidget() {
@@ -613,6 +614,7 @@ class _LoginPageState extends State<LoginPage>
   void signInWithGoogle() async {
     BaseAuth auth = new Auth();
     String uid = await auth.signInWithGoogle();
+    Constant.useruid = uid;
   }
 
   void signInWithFacebook() async {
@@ -620,24 +622,25 @@ class _LoginPageState extends State<LoginPage>
     String uid = await auth.signInWithFacebook();
     print('facebook uid: ' + uid);
     if (uid != 'canceled' && uid != 'error' && uid != null) {
-      navigateToHomePage(uid);
+      Constant.useruid = uid;
+      navigateToHomePage();
     }
   }
 
   //login and signup through gmail and password
   loginButtonPressed() async {
     if (_formKey.currentState.validate()) {
-      try{
-      BaseAuth auth = new Auth();
-      String uid = await auth.signIn(
-          loginEmailController.text, loginPasswordController.text);
-      print('uid: $uid');
-      if (uid != null) {
-navigateToHomePage(uid);
-      }
-      }
-      catch(error) {
-        print('error during signin: '+error.toString());
+      try {
+        BaseAuth auth = new Auth();
+        String uid = await auth.signIn(
+            loginEmailController.text, loginPasswordController.text);
+        print('uid: $uid');
+        if (uid != null) {
+          Constant.useruid = uid;
+          navigateToHomePage();
+        }
+      } catch (error) {
+        print('error during signin: ' + error.toString());
         setState(() {
           loginErrorVisibility = true;
         });
@@ -645,15 +648,14 @@ navigateToHomePage(uid);
     }
   }
 
-  singupButtonPressed() async{
+  singupButtonPressed() async {
     if (_formKey.currentState.validate()) {
-      try{
-      BaseAuth auth = new Auth();
-      await auth.signUp(signupNameController.text,
-          signupEmailController.text, signupPasswordController.text);
-      }
-      catch(error) {
-        print('error during signin: '+error.toString());
+      try {
+        BaseAuth auth = new Auth();
+        await auth.signUp(signupNameController.text, signupEmailController.text,
+            signupPasswordController.text);
+      } catch (error) {
+        print('error during signin: ' + error.toString());
         setState(() {
           loginErrorVisibility = true;
         });
@@ -662,8 +664,11 @@ navigateToHomePage(uid);
   }
 
   //navigation
-  navigateToHomePage(uid) {
+  navigateToHomePage() {
     Navigator.pushReplacement(
-        context, new MaterialPageRoute(builder: (context) => HomePage(useruid: uid,)));
+        context,
+        new MaterialPageRoute(
+            builder: (context) => HomePage(
+                )));
   }
 }

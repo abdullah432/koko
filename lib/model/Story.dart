@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Story {
-  int _id;
   String _title;
   String _date;
   String _feeling;
   String _reason;
   String _whatHappened;
   String _note;
+  DocumentReference reference;
 
   Story(
       this._title, this._date, this._feeling, this._reason, this._whatHappened,
@@ -14,7 +16,6 @@ class Story {
       this._title, this._date, this._feeling, this._reason, this._whatHappened,
       [this._note]);
 
-  int get id => this._id;
   String get title => this._title;
   String get date => this._date;
   String get feeling => this._feeling;
@@ -46,28 +47,16 @@ class Story {
     this._note = note;
   }
 
-  //Convert Story object to map object
-  Map<String, dynamic> toMap() {
-    var map = Map<String, dynamic>();
-    if (_id != null) map['id'] = _id;
-    map['title'] = _title;
-    map['date'] = _date;
-    map['feeling'] = _feeling;
-    map['reason'] = _reason;
-    map['whatHappened'] = _whatHappened;
-    map['note'] = _note;
-
-    return map;
-  }
-
-  //Convert Map object to Story object
-  Story.fromMapObject(Map<String, dynamic> map) {
-    _id = map['id'];
-    _title = map['title'];
-    _date = map['date'];
-    _feeling = map['feeling'];
-    _reason = map['reason'];
-    _whatHappened = map['whatHappened'];
+    //assert mean these fields are manditory, other can be null
+  Story.fromMap(Map<String, dynamic> map, {this.reference})
+    :
+    _title = map['title'],
+    _date = map['date'],
+    _feeling = map['feeling'],
+    _reason = map['reason'],
+    _whatHappened = map['whatHappened'],
     _note = map['note'];
-  }
+
+  Story.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

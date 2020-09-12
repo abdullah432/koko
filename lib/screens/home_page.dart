@@ -5,17 +5,14 @@ import 'package:koko/screens/settingpage.dart';
 import 'package:koko/screens/storydetail.dart';
 import 'package:koko/utils/constant.dart';
 import 'package:koko/utils/customfirestore.dart';
-import 'package:koko/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:koko/widgets/dropdownpopup.dart';
 
 class HomePage extends StatefulWidget {
-  final useruid;
-  HomePage({@required this.useruid});
   @override
   State<StatefulWidget> createState() {
-    return HomePageState(useruid);
+    return HomePageState();
   }
 }
 
@@ -23,20 +20,16 @@ class HomePageState extends State<HomePage> {
   final PageController pageController = PageController(viewportFraction: 0.8);
   int currentPage = 0;
   int count = 0;
-  DatabaseHelper databaseHelper = DatabaseHelper();
+  CustomFirestore _customFirestore = CustomFirestore();
   List<Story> storyList;
 
   double height;
   double width;
   bool buttonDown = false;
 
-  CustomFirestore _customFirestore = CustomFirestore();
-  var useruid;
-  HomePageState(this.useruid);
-
   @override
   void initState() {
-    _customFirestore.loadUserName(userid: useruid);
+    _customFirestore.loadUserName(userid: Constant.useruid);
     super.initState();
     pageController.addListener(() {
       int next = pageController.page.round();
@@ -293,10 +286,10 @@ class HomePageState extends State<HomePage> {
   }
 
   void deleteActiveStory(Story storyList) async {
-    int result = await databaseHelper.deleteStory(storyList.id);
-    if (result != 0) {
-      updateStoryList();
-    }
+    // int result = await databaseHelper.deleteStory(storyList.id);
+    // if (result != 0) {
+    //   updateStoryList();
+    // }
   }
 
   void showSnackBar(context, msg) {
@@ -304,16 +297,10 @@ class HomePageState extends State<HomePage> {
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  void updateStoryList() {
-    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-    dbFuture.then((database) {
-      Future<List<Story>> storyListFuture = databaseHelper.getStoryList();
-      storyListFuture.then((storyList) {
-        setState(() {
-          this.storyList = storyList;
-          this.count = storyList.length;
-        });
-      });
+  void updateStoryList() async {
+    this.storyList = await _customFirestore.loadStoriesData();
+    setState(() {
+      this.count = storyList.length;
     });
   }
 

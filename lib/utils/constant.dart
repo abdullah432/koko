@@ -15,6 +15,8 @@ class Constant {
 
   //user name
   static String username;
+  //user id
+  static String useruid;
 
   //functions
   static DateTime getActiveStoryDate(String value) {

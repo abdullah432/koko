@@ -4,6 +4,7 @@ import 'package:koko/screens/home_page.dart';
 import 'package:koko/screens/login_signup_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:koko/utils/constant.dart';
 
 class RootPage extends StatelessWidget {
   @override
@@ -16,8 +17,9 @@ class RootPage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active){
           final bool isLoggedIn = snapshot.hasData;
           String uid = snapshot.data;
+          Constant.useruid = uid;
           // debugPrint('data: '+uid.toString());
-          return isLoggedIn ? HomePage(useruid: uid,) : LoginPage();
+          return isLoggedIn ? HomePage() : LoginPage();
         }
         return _buildWaitingScreen(context);
         //should return splash screen here
