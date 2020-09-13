@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:koko/model/auth_provider.dart';
 import 'package:koko/model/authentication.dart';
+import 'package:koko/screens/add_story.dart';
 import 'package:koko/screens/login_signup_page.dart';
 import 'package:koko/screens/settingpage.dart';
 import 'package:koko/utils/constant.dart';
@@ -18,10 +19,14 @@ class CustomDropDownPopup extends StatelessWidget {
           ),
           PopupMenuItem(
             value: 2,
+            child: Text("Add Story"),
+          ),
+          PopupMenuItem(
+            value: 3,
             child: Text("Signout"),
           ),
         ],
-        initialValue: 3,
+        initialValue: 4,
         onCanceled: () {
           print("You have canceled the menu.");
         },
@@ -29,6 +34,8 @@ class CustomDropDownPopup extends StatelessWidget {
           print("value:$value");
           if (value == 1)
             navigateToSettingPage(context);
+          else if (value == 2) 
+            navigateToAddNewStoryPage(context);
           else
             signOut(context);
         },
@@ -63,6 +70,14 @@ class CustomDropDownPopup extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(
         builder: (context) {
           return SettingPage();
+        },
+      ));
+  }
+
+  navigateToAddNewStoryPage(context) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return AddStory();
         },
       ));
   }

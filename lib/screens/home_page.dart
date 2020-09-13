@@ -43,12 +43,13 @@ class HomePageState extends State<HomePage> {
 
   //when user reach to end then this will be true
   bool reachToEnd = false;
+  //admob
+  MyCustomAdmob myCustomAdmob = MyCustomAdmob();
 
   @override
   void initState() {
     _customFirestore.loadUserName(userid: Constant.useruid);
     super.initState();
-    showBannerads();
 
     pageController.addListener(() {
       int next = pageController.page.round();
@@ -70,20 +71,14 @@ class HomePageState extends State<HomePage> {
     });
 
     // //if homepage call from addstory page then move to last page
-    if (storyAdded != null)
+    if (storyAdded != null) {
+      showInterstitialVideoAds();
       Timer(Duration(seconds: 1), () => moveToEndOfPage());
+    }
   }
 
-  showBannerads() {
-    MyCustomAdmob myCustomAdmob = MyCustomAdmob();
-    myCustomAdmob.bannerAd()
-      ..load()
-      ..show();
-  }
-
-  showInterstitialAds() {
-    MyCustomAdmob myCustomAdmob = MyCustomAdmob();
-    myCustomAdmob.myInterstitialAds()
+  showInterstitialVideoAds() {
+    myCustomAdmob.createInterstitialVideoAd()
       ..load()
       ..show();
   }

@@ -1,7 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:date_format/date_format.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter_native_admob/flutter_native_admob.dart';
+import 'package:flutter_native_admob/native_admob_controller.dart';
 import 'package:koko/model/Story.dart';
 import 'package:koko/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:koko/utils/mycustomadmob.dart';
 
 class StoryDetail extends StatefulWidget {
   final Story story;
@@ -18,6 +25,47 @@ class StoryDetailState extends State<StoryDetail> {
   Story story;
   int currentIndex;
   StoryDetailState(this.story, this.currentIndex);
+
+  // native ad
+  static const _adUnitID = "ca-app-pub-3940256099942544/1044960115";
+
+  final _nativeAdController = NativeAdmobController();
+  double _height = 0;
+
+  StreamSubscription _subscription;
+
+  @override
+  void initState() {
+    _subscription = _nativeAdController.stateChanged.listen(_onStateChanged);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    _nativeAdController.dispose();
+    super.dispose();
+  }
+
+  void _onStateChanged(AdLoadState state) {
+    switch (state) {
+      case AdLoadState.loading:
+        setState(() {
+          _height = 0;
+        });
+        break;
+
+      case AdLoadState.loadCompleted:
+        setState(() {
+          _height = 330;
+        });
+        break;
+
+      default:
+        break;
+    }
+  }
+  //native ad
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +97,8 @@ class StoryDetailState extends State<StoryDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 60.0, bottom: 15.0),
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 60.0, bottom: 15.0),
                       child: Text(
                         formatDate(Constant.getActiveStoryDate(story.date),
                             [dd, ' ', MM, ' ', yyyy]),
@@ -135,7 +184,9 @@ class StoryDetailState extends State<StoryDetail> {
                             //space
                             SizedBox(height: 10.0),
                             Text(
-                              story.whatHappened != '' ? story.whatHappened : 'You choose to not record it',
+                              story.whatHappened != ''
+                                  ? story.whatHappened
+                                  : 'You choose to not record it',
                               style: TextStyle(
                                   // color: Colors.white,
                                   fontFamily: 'Raleway',
@@ -154,11 +205,29 @@ class StoryDetailState extends State<StoryDetail> {
                             //space
                             SizedBox(height: 10.0),
                             Text(
-                              story.note != '' ? story.note : 'You choose to not record it',
+                              story.note != ''
+                                  ? story.note
+                                  : 'You choose to not record it',
                               style: TextStyle(
                                   // color: Colors.white,
                                   fontFamily: 'Raleway',
                                   fontSize: 19),
+                            ),
+                            //space
+                            SizedBox(height: 10.0),
+                            //native ad widget
+                            Container(
+                              height: _height,
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.only(bottom: 20.0),
+                              child: NativeAdmob(
+                                // Your ad unit id
+                                adUnitID: _adUnitID,
+                                controller: _nativeAdController,
+
+                                // Don't show loading widget when in loading state
+                                loading: Container(),
+                              ),
                             ),
                           ],
                         ),
@@ -171,5 +240,4 @@ class StoryDetailState extends State<StoryDetail> {
       ],
     ));
   }
-
 }
