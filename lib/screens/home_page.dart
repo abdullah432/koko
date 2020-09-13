@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:date_format/date_format.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:koko/model/Story.dart';
 import 'package:koko/screens/add_story.dart';
 import 'package:koko/screens/settingpage.dart';
@@ -6,17 +10,24 @@ import 'package:koko/screens/storydetail.dart';
 import 'package:koko/utils/constant.dart';
 import 'package:koko/utils/customfirestore.dart';
 import 'package:flutter/material.dart';
+import 'package:koko/utils/mycustomadmob.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:koko/widgets/dropdownpopup.dart';
 
 class HomePage extends StatefulWidget {
+  final bool storyAdded;
+  HomePage({this.storyAdded});
   @override
   State<StatefulWidget> createState() {
-    return HomePageState();
+    return HomePageState(storyAdded);
   }
 }
 
 class HomePageState extends State<HomePage> {
+  //when home page call after adding new story then we will move to end of pages
+  bool storyAdded;
+  HomePageState(this.storyAdded);
+
   final PageController pageController = PageController(viewportFraction: 0.8);
   int currentPage = 0;
   int count = 0;
@@ -27,18 +38,54 @@ class HomePageState extends State<HomePage> {
   double width;
   bool buttonDown = false;
 
+  //snackbar
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  //when user reach to end then this will be true
+  bool reachToEnd = false;
+
   @override
   void initState() {
     _customFirestore.loadUserName(userid: Constant.useruid);
     super.initState();
+    showBannerads();
+
     pageController.addListener(() {
       int next = pageController.page.round();
       if (currentPage != next) {
         setState(() {
           currentPage = next;
+          print(pageController.page.toString());
+          print(count.toString());
+          //when count is zero then do nothing
+          if (count != 0) {
+            if (pageController.page > (count)) {
+              reachToEnd = true;
+            } else {
+              reachToEnd = false;
+            }
+          }
         });
       }
     });
+
+    // //if homepage call from addstory page then move to last page
+    if (storyAdded != null)
+      Timer(Duration(seconds: 1), () => moveToEndOfPage());
+  }
+
+  showBannerads() {
+    MyCustomAdmob myCustomAdmob = MyCustomAdmob();
+    myCustomAdmob.bannerAd()
+      ..load()
+      ..show();
+  }
+
+  showInterstitialAds() {
+    MyCustomAdmob myCustomAdmob = MyCustomAdmob();
+    myCustomAdmob.myInterstitialAds()
+      ..load()
+      ..show();
   }
 
   @override
@@ -49,44 +96,74 @@ class HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+        key: _scaffoldKey,
         body: Stack(children: [
-      //PageView
-      PageView.builder(
-          scrollDirection: Axis.horizontal,
-          controller: pageController,
-          itemCount: count + 2,
-          itemBuilder: (BuildContext context, int currentIndex) {
-            if (currentIndex == 0) {
-              return introductryPage();
-            } else if (currentIndex == 1) {
-              // debugPrint(currentPage.toString());
-              bool active = currentIndex == currentPage;
-              return addNotePage(active);
-            } else if (storyList.length + 1 >= currentIndex) {
-              // debugPrint('StoryList Length' + storyList.length.toString());
-              // debugPrint('currentIndex 1:' + currentIndex.toString());
-              bool active = currentIndex == currentPage;
-              // debugPrint('currentIndex 2:' + currentIndex.toString());
-              return storyPages(
-                  storyList[currentIndex - 2], active, currentIndex);
-            }
-          }),
-      //setting button
-      Positioned(
-          top: 35.0,
-          right: 12.0,
-          child: GestureDetector(
-            onTap: () {
-              navigateToSettingPage();
-            },
-            child: CustomDropDownPopup(),
-            // Icon(
-            //   Icons.settings,
-            //   color: Constant.selectedColor,
-            //   size: 30,
-            // ),
-          )),
-    ]));
+          //PageView
+          PageView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: pageController,
+              itemCount: count + 2,
+              itemBuilder: (BuildContext context, int currentIndex) {
+                if (currentIndex == 0) {
+                  return introductryPage();
+                } else if (currentIndex == 1) {
+                  // debugPrint(currentPage.toString());
+                  bool active = currentIndex == currentPage;
+                  return addNotePage(active);
+                } else if (storyList.length + 1 >= currentIndex) {
+                  // debugPrint('StoryList Length' + storyList.length.toString());
+                  // debugPrint('currentIndex 1:' + currentIndex.toString());
+                  bool active = currentIndex == currentPage;
+                  // debugPrint('currentIndex 2:' + currentIndex.toString());
+                  return storyPages(
+                      storyList[currentIndex - 2], active, currentIndex);
+                }
+              }),
+          //setting button
+          Positioned(
+              top: 35.0,
+              right: 12.0,
+              child: GestureDetector(
+                onTap: () {
+                  navigateToSettingPage();
+                },
+                child: CustomDropDownPopup(),
+                // Icon(
+                //   Icons.settings,
+                //   color: Constant.selectedColor,
+                //   size: 30,
+                // ),
+              )),
+          //setting button
+          Positioned(
+              bottom: 35.0,
+              right: 12.0,
+              child: GestureDetector(
+                onTap: () {
+                  // print(pageController.page.toString());
+                  setState(() {
+                    if (!reachToEnd) {
+                      moveToEndOfPage();
+                      reachToEnd = true;
+                    } else {
+                      moveToFirstPage();
+                      reachToEnd = false;
+                    }
+                  });
+                },
+                child: reachToEnd
+                    ? Icon(
+                        FlutterIcons.backward_faw,
+                        color: Constant.selectedColor,
+                        size: 30,
+                      )
+                    : Icon(
+                        FlutterIcons.forward_faw5s,
+                        color: Constant.selectedColor,
+                        size: 30,
+                      ),
+              )),
+        ]));
   }
 
   Widget storyPages(Story storyList, bool active, currentIndex) {
@@ -285,16 +362,20 @@ class HomePageState extends State<HomePage> {
     return storyList.title;
   }
 
-  void deleteActiveStory(Story storyList) async {
-    // int result = await databaseHelper.deleteStory(storyList.id);
-    // if (result != 0) {
-    //   updateStoryList();
-    // }
+  void deleteActiveStory(Story story) async {
+    bool response = await _customFirestore.deleteStory(story.date);
+    if (response == true) {
+      setState(() {
+        storyList.remove(story);
+      });
+    } else {
+      showSnackBar('Failed to delete');
+    }
   }
 
-  void showSnackBar(context, msg) {
-    SnackBar snackbar = SnackBar(content: Text(msg));
-    Scaffold.of(context).showSnackBar(snackbar);
+  void showSnackBar(msg) {
+    _scaffoldKey.currentState
+        .showSnackBar(new SnackBar(content: new Text(msg)));
   }
 
   void updateStoryList() async {
@@ -328,5 +409,22 @@ class HomePageState extends State<HomePage> {
             ],
           );
         });
+  }
+
+  //methods
+  void moveToEndOfPage() {
+    pageController.animateToPage(
+      count + 1,
+      curve: Curves.easeIn,
+      duration: Duration(milliseconds: 700),
+    );
+  }
+
+  void moveToFirstPage() {
+    pageController.animateToPage(
+      0,
+      curve: Curves.easeIn,
+      duration: Duration(milliseconds: 700),
+    );
   }
 }

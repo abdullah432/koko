@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:koko/model/Story.dart';
 import 'package:koko/utils/constant.dart';
@@ -14,12 +16,15 @@ class CustomFirestore {
   }
 
   loadStoriesData() async {
-    DocumentReference docRef = db.collection('users').doc(Constant.useruid);
-    print(docRef.toString());
-    QuerySnapshot querySnapshot = await db
-        .collection("stories")
-        .where('reference', isEqualTo: docRef)
-        .get();
+    // DocumentReference docRef = db.collection('users').doc(Constant.useruid);
+    // print(docRef.toString());
+    // QuerySnapshot querySnapshot = await db
+    //     .collection("stories")
+    //     .where('reference', isEqualTo: docRef)
+    //     .get();
+
+    QuerySnapshot querySnapshot =
+        await db.collection('users').doc(Constant.useruid).collection("stories").get();
 
     Story story;
     List<Story> listOfStory = List();
@@ -30,7 +35,7 @@ class CustomFirestore {
     return listOfStory;
   }
 
-  Future<bool> addStoryToFirestore({
+  Future<String> addStoryToFirestore({
     @required String title,
     @required String date,
     @required String feeling,
@@ -39,16 +44,42 @@ class CustomFirestore {
     @required String note,
   }) async {
     try {
-      await db.collection("stories").add({
+      await db.collection('users').doc(Constant.useruid).collection("stories").doc(date).set({
         'title': title,
         'date': date,
         'feeling': feeling,
-        'reference': db.collection('users').doc(Constant.useruid),
+        // 'reference': db.collection('users').doc(Constant.useruid),
         'reason': reason,
         'whatHappened': whatHappened,
         'note': note,
       }).whenComplete(() {
+        return 'success';
+      }).catchError((error) {
+        print('error during adding service: ' + error.toString());
+        return error.toString();
+      });
+    } on SocketException {
+      return 'Please check your internet connection';
+    } catch (error) {
+      print('exception during adding service: ' + error.toString());
+      return error.toString();
+    }
+    return 'success';
+  }
+
+  Future<bool> deleteStory(date) async {
+
+    try {
+      await db
+          .collection("users")
+          .doc(Constant.useruid)
+          .collection('stories')
+          .doc(date)
+          .delete()
+          .whenComplete(() {
         return true;
+      }).timeout(Duration(seconds: 10), onTimeout: () {
+        // handle transaction timeout here
       }).catchError((onError) {
         print('error during adding service: ' + onError.toString());
         return false;
@@ -58,5 +89,11 @@ class CustomFirestore {
       return false;
     }
     return true;
+  }
+
+  void updateUserName(name) {
+    db.collection('users').doc(Constant.useruid).set({
+      'name': name
+    });
   }
 }

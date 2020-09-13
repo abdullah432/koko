@@ -18,7 +18,7 @@ class SaveStoryState extends State {
   double minimumPadding = 5.0;
   Story story;
   TextEditingController titleConroller = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +140,7 @@ class SaveStoryState extends State {
     // }
 
     CustomFirestore _customFirestore = CustomFirestore();
-    bool result = await _customFirestore.addStoryToFirestore(
+    String result = await _customFirestore.addStoryToFirestore(
       title: GlobalData.title,
       date: GlobalData.date,
       feeling: GlobalData.feeling,
@@ -149,11 +149,16 @@ class SaveStoryState extends State {
       note: GlobalData.note,
     );
 
-    if (result) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+    if (result == 'success') {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    storyAdded: true,
+                  )),
+          (Route<dynamic> route) => false);
     } else {
-      showSnackBar(context, 'Fail, please try again');
+      showSnackBar(context, result);
     }
   }
 

@@ -5,16 +5,17 @@ import 'package:koko/screens/login_signup_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:koko/utils/constant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RootPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
-    print('HELLO');
     final BaseAuth auth = AuthProvider.of(context).auth;
     return StreamBuilder<String>(
       stream: auth.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-        if (snapshot.connectionState == ConnectionState.active){
+        if (snapshot.connectionState == ConnectionState.active) {
           final bool isLoggedIn = snapshot.hasData;
           String uid = snapshot.data;
           Constant.useruid = uid;

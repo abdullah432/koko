@@ -71,9 +71,7 @@ class Auth implements BaseAuth {
   Future<String> signInWithFacebook() async {
     final FacebookLogin facebookSignIn = new FacebookLogin();
 
-    print('before fb login');
     final FacebookLoginResult result = await facebookSignIn.logIn(['email']);
-    print('after fb login');
 
     try {
       if (result.status == FacebookLoginStatus.loggedIn) {

@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:koko/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:koko/utils/customfirestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';
@@ -81,23 +82,26 @@ class SettingPageState extends State<SettingPage> {
                   SizedBox(
                     height: 60.0,
                   ),
-                  TextFormField(
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                      style: TextStyle(color: Colors.white, fontSize: 22.0),
-                      controller: nameController,
-                      focusNode: _focusNode,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(left: 10.0),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26),
-                        ),
-                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    child: TextFormField(
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        style: TextStyle(color: Colors.white, fontSize: 22.0),
+                        controller: nameController,
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.only(left: 10.0),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black26),
+                          ),
+                        )),
+                  ),
                   SizedBox(
                     height: 40.0,
                   ),
@@ -118,14 +122,15 @@ class SettingPageState extends State<SettingPage> {
                       onPressed: () {
                         saveUserNameAndColor();
                       },
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius:
-                              BorderRadius.all(Radius.circular(15.0))),
+                              BorderRadius.all(Radius.circular(10.0))),
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Text(
-                          'Done',
-                          style: TextStyle(fontSize: 20.0),
+                          'SAVE',
+                          style: TextStyle(fontSize: 20.0, color: Constant.selectedColor, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -177,7 +182,8 @@ class SettingPageState extends State<SettingPage> {
       // obtain shared preferences
       final prefs = await SharedPreferences.getInstance();
       if (Constant.username != nameController.text) {
-        prefs.setString('name', nameController.text);
+        CustomFirestore _customFirestore = CustomFirestore();
+        _customFirestore.updateUserName(nameController.text);
         Constant.username = nameController.text;
       }
       //if colorindex not equal to -1 that means user select new color

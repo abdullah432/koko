@@ -3,6 +3,7 @@ import 'package:koko/model/auth_provider.dart';
 import 'package:koko/model/authentication.dart';
 import 'package:koko/screens/login_signup_page.dart';
 import 'package:koko/screens/settingpage.dart';
+import 'package:koko/utils/constant.dart';
 
 class CustomDropDownPopup extends StatelessWidget {
   const CustomDropDownPopup({ Key key}) : super(key: key);
@@ -33,6 +34,7 @@ class CustomDropDownPopup extends StatelessWidget {
         },
         icon: Icon(
           Icons.arrow_drop_down,
+          color: Constant.selectedColor,
           size: 40,
         ),
       );
