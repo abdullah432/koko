@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "1028060356918",
+    "firebase_url": "https://kuku-ede69.firebaseio.com",
+    "project_id": "kuku-ede69",
+    "storage_bucket": "kuku-ede69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028060356918:android:daae83426cc2d1325d1397",
+        "android_client_info": {
+          "package_name": "com.kukustudio.kuku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028060356918-qnbbg33e2b38q5p8094h487vliv15n3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kukustudio.kuku",
+            "certificate_hash": "ff91751c1bb26a8e1a015c39dcb686899e09c813"
+          }
+        },
+        {
+          "client_id": "1028060356918-dr4bjdkmc7th473d3ptgm39rb8hvfmj1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwTxPCWF-WeInCxxGVPWINEWCOMrOfVzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028060356918-dr4bjdkmc7th473d3ptgm39rb8hvfmj1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5554760537482883~8172684706"
+    }
+  ],
+  "configuration_version": "1"
+}
