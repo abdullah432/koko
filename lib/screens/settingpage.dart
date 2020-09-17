@@ -1,8 +1,7 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:koko/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:koko/utils/customfirestore.dart';
+import 'package:kuku/utils/constant.dart';
+import 'package:kuku/utils/customfirestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home_page.dart';

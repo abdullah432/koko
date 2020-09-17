@@ -21,8 +21,7 @@ class MyCustomAdmob {
 
   InterstitialAd createInterstitialAd() {
     return InterstitialAd(
-      // adUnitId: 'ca-app-pub-5554760537482883/1896186436',
-      adUnitId: 'ca-app-pub-3940256099942544/1033173712',
+      adUnitId: 'ca-app-pub-5554760537482883/1896186436',
       // targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("InterstitialAd event is $event");
@@ -32,8 +31,7 @@ class MyCustomAdmob {
 
   InterstitialAd createInterstitialVideoAd() {
     return InterstitialAd(
-      // adUnitId: 'ca-app-pub-5554760537482883/5613399155',
-      adUnitId: 'ca-app-pub-3940256099942544/8691691433',
+      adUnitId: 'ca-app-pub-5554760537482883/5613399155',
       // targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("InterstitialAd event is $event");

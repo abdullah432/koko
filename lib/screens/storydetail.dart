@@ -27,8 +27,7 @@ class StoryDetailState extends State<StoryDetail> {
   StoryDetailState(this.story, this.currentIndex);
 
   // native ad
-  // static const _adUnitID = "ca-app-pub-5554760537482883/6765369733";
-  static const _adUnitID = "ca-app-pub-3940256099942544/1044960115";
+  static const _adUnitID = "ca-app-pub-5554760537482883/6765369733";
 
   final _nativeAdController = NativeAdmobController();
   double _height = 0;
