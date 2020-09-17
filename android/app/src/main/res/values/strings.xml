@@ -1,5 +1,9 @@
 <resources>
+<<<<<<< HEAD
 <string name="app_name">KUKU</string>
+=======
+<string name="app_name">KoKo</string>
+>>>>>>> 5780542fdbea65039b4e4ab52e59d6456e4b40ca
 <string name="facebook_app_id">1535310443311639</string>
 <string name="fb_login_protocol_scheme">fb1535310443311639</string>
 </resources>
