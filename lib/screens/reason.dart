@@ -14,17 +14,7 @@ class ReasonPage extends StatefulWidget {
 
 class ReasonPageState extends State<ReasonPage> {
   final minimumPadding = 5.0;
-  final reasonsArrayTxt = [
-    "Realationship",
-    "Work",
-    "Family",
-    "Traveling",
-    "Food",
-    "Education",
-    "Exercise",
-    "Friends",
-    "Others"
-  ];
+  final reasonsArrayTxt = Constant.listOfReasons;
   final reasonsArrayIcon = [
     FlutterIcons.heart_ant,
     Icons.work,

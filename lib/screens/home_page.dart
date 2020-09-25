@@ -85,13 +85,13 @@ class HomePageState extends State<HomePage> {
   }
 
   showInterstitialAd() {
-    myCustomAdmob.createInterstitialAd()
+    myCustomAdmob.interstitialAdMob()
       ..load()
       ..show();
   }
 
   showInterstitialVideoAd() {
-    myCustomAdmob.createInterstitialVideoAd()
+    myCustomAdmob.interstitialVideoAdMob()
       ..load()
       ..show();
   }

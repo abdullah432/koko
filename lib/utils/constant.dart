@@ -13,6 +13,21 @@ class Constant {
 
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
 
+  //List of feeling
+  static List<String> listOfFeelings = ['SAD', 'COMPLETELY OK', 'HAPPY'];
+  //List of reason
+  static List<String> listOfReasons = [
+    "Realationship",
+    "Work",
+    "Family",
+    "Traveling",
+    "Food",
+    "Education",
+    "Exercise",
+    "Friends",
+    "Others"
+  ];
+
   //user name
   static String username;
   //user id

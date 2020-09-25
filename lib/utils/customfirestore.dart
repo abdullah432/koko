@@ -23,8 +23,11 @@ class CustomFirestore {
     //     .where('reference', isEqualTo: docRef)
     //     .get();
 
-    QuerySnapshot querySnapshot =
-        await db.collection('users').doc(Constant.useruid).collection("stories").get();
+    QuerySnapshot querySnapshot = await db
+        .collection('users')
+        .doc(Constant.useruid)
+        .collection("stories")
+        .get();
 
     Story story;
     List<Story> listOfStory = List();
@@ -44,7 +47,12 @@ class CustomFirestore {
     @required String note,
   }) async {
     try {
-      await db.collection('users').doc(Constant.useruid).collection("stories").doc(date).set({
+      await db
+          .collection('users')
+          .doc(Constant.useruid)
+          .collection("stories")
+          .doc(date)
+          .set({
         'title': title,
         'date': date,
         'feeling': feeling,
@@ -67,8 +75,36 @@ class CustomFirestore {
     return 'success';
   }
 
-  Future<bool> deleteStory(date) async {
+  Future<String> updateStoryToFirestore({@required Story story}) async {
+    try {
+      await db
+          .collection('users')
+          .doc(Constant.useruid)
+          .collection("stories")
+          .doc(story.date)
+          .update({
+        'title': story.title,
+        'date': story.date,
+        'feeling': story.feeling,
+        'reason': story.reason,
+        'whatHappened': story.whatHappened,
+        'note': story.note,
+      }).whenComplete(() {
+        return 'success';
+      }).catchError((error) {
+        print('error during adding service: ' + error.toString());
+        return error.toString();
+      });
+    } on SocketException {
+      return 'Please check your internet connection';
+    } catch (error) {
+      print('exception during adding service: ' + error.toString());
+      return error.toString();
+    }
+    return 'success';
+  }
 
+  Future<bool> deleteStory(date) async {
     try {
       await db
           .collection("users")
@@ -92,13 +128,12 @@ class CustomFirestore {
   }
 
   void updateUserName(name) {
-    db.collection('users').doc(Constant.useruid).set({
-      'name': name
-    });
+    db.collection('users').doc(Constant.useruid).set({'name': name});
   }
 
-  Future<String> loadPrivacyPolicyUrl() async{
-    DocumentSnapshot documentSnapshot = await db.collection('useful').doc('mMUOdFKkb5xt3DfXUiIj').get();
+  Future<String> loadPrivacyPolicyUrl() async {
+    DocumentSnapshot documentSnapshot =
+        await db.collection('useful').doc('mMUOdFKkb5xt3DfXUiIj').get();
     String url = documentSnapshot.data()['privacypolicy'];
     return url;
   }

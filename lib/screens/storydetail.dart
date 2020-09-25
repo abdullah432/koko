@@ -1,11 +1,7 @@
-import 'dart:async';
-import 'dart:io';
+import 'package:kuku/screens/editstorypage.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:date_format/date_format.dart';
 import 'package:facebook_audience_network/ad/ad_native.dart';
-import 'package:firebase_admob/firebase_admob.dart';
-import 'package:flutter_native_admob/flutter_native_admob.dart';
-import 'package:flutter_native_admob/native_admob_controller.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -26,53 +22,6 @@ class StoryDetailState extends State<StoryDetail> {
   int currentIndex;
   StoryDetailState(this.story, this.currentIndex);
 
-  // native ad
-  static const _adUnitID = "ca-app-pub-5554760537482883/4297761131";
-
-  final _nativeAdController = NativeAdmobController();
-  double _height = 0;
-
-  StreamSubscription _subscription;
-
-  // //for facebook native ad
-  // Widget _currentAd = SizedBox(
-  //   width: 0.0,
-  //   height: 0.0,
-  // );
-
-  @override
-  void initState() {
-    _subscription = _nativeAdController.stateChanged.listen(_onStateChanged);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    _nativeAdController.dispose();
-    super.dispose();
-  }
-
-  void _onStateChanged(AdLoadState state) {
-    switch (state) {
-      case AdLoadState.loading:
-        setState(() {
-          _height = 0;
-        });
-        break;
-
-      case AdLoadState.loadCompleted:
-        setState(() {
-          _height = 330;
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
-  //native ad
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +41,18 @@ class StoryDetailState extends State<StoryDetail> {
                     )),
               )),
         ),
+        Positioned(
+            right: 10,
+            top: 30,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: IconButton(
+                onPressed: () {
+                  navigateToEditStory();
+                },
+                icon: Icon(Icons.edit, color: Colors.yellow, size: 30),
+              ),
+            )),
         //Draggable Scrollable sheet
         DraggableScrollableSheet(
             initialChildSize: 0.5,
@@ -104,7 +65,7 @@ class StoryDetailState extends State<StoryDetail> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 15.0, right: 15.0, top: 60.0, bottom: 15.0),
+                          left: 15.0, right: 15.0, top: 0.0, bottom: 15.0),
                       child: Text(
                         formatDate(Constant.getActiveStoryDate(story.date),
                             [dd, ' ', MM, ' ', yyyy]),
@@ -129,8 +90,6 @@ class StoryDetailState extends State<StoryDetail> {
                     SizedBox(height: 8.0),
                     Container(
                       width: double.infinity,
-                      // height: double.maxFinite,
-                      // color: Colors.white,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.white,
@@ -200,6 +159,9 @@ class StoryDetailState extends State<StoryDetail> {
                             ),
                             //space
                             SizedBox(height: 20.0),
+                            _facebookNativeBannerAd(),
+                            //space
+                            SizedBox(height: 20.0),
                             //heading 4
                             Text(
                               'YOUR DAILY NOTES',
@@ -219,11 +181,6 @@ class StoryDetailState extends State<StoryDetail> {
                                   fontFamily: 'Raleway',
                                   fontSize: 19),
                             ),
-                            //space
-                            SizedBox(height: 10.0),
-                            Constant.facebooknative
-                                ? _facebookNativeAd()
-                                : _admobNativeAd(),
                           ],
                         ),
                       ),
@@ -236,42 +193,31 @@ class StoryDetailState extends State<StoryDetail> {
     ));
   }
 
-  _admobNativeAd() {
-    return Container(
-      height: _height,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(bottom: 20.0),
-      child: NativeAdmob(
-        // Your ad unit id
-        adUnitID: _adUnitID,
-        controller: _nativeAdController,
-        // Don't show loading widget when in loading state
-        loading: Container(),
-      ),
-    );
-  }
-
-  _facebookNativeAd() {
+  _facebookNativeBannerAd() {
     return FacebookNativeAd(
-      placementId: "3663243730352300_3663359137007426",
-      adType: NativeAdType.NATIVE_AD,
+      placementId: "3663243730352300_3663623960314277",
+      adType: NativeAdType.NATIVE_BANNER_AD,
+      bannerAdSize: NativeBannerAdSize.HEIGHT_100,
+      keepExpandedWhileLoading: false,
       width: double.infinity,
-      height: 300,
+      height: 100.0,
       backgroundColor: Colors.blue,
       titleColor: Colors.white,
       descriptionColor: Colors.white,
       buttonColor: Colors.deepPurple,
       buttonTitleColor: Colors.white,
       buttonBorderColor: Colors.white,
-      keepAlive:
-          true, //set true if you do not want adview to refresh on widget rebuild
-      keepExpandedWhileLoading:
-          false, // set false if you want to collapse the native ad view when the ad is loading
-      expandAnimationDuraion:
-          300, //in milliseconds. Expands the adview with animation when ad is loaded
       listener: (result, value) {
         print("Native Ad: $result --> $value");
       },
     );
+  }
+
+  navigateToEditStory() async {
+    story = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => EditStoryPage(story: story)));
+    setState(() {
+      print('data updated');
+    });
   }
 }
