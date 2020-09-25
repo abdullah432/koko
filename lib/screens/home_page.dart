@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:date_format/date_format.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -96,6 +96,17 @@ class HomePageState extends State<HomePage> {
       ..show();
   }
 
+  showFacebookInterstitialAd() {
+    FacebookInterstitialAd.loadInterstitialAd(
+      placementId: "3663243730352300_3663613440315329",
+      listener: (result, value) {
+        if (result == InterstitialAdResult.LOADED)
+          FacebookInterstitialAd.showInterstitialAd(delay: 5000);
+        if (result == InterstitialAdResult.ERROR) showInterstitialVideoAd();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (storyList == null) {
@@ -180,11 +191,7 @@ class HomePageState extends State<HomePage> {
     return Center(
         child: GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          StoryDetail(storyList, currentIndex)));
+              navigateToStoryDetailPage(storyList, currentIndex);
             },
             child: Hero(
               tag: 'hero$currentIndex',
@@ -436,5 +443,18 @@ class HomePageState extends State<HomePage> {
       curve: Curves.easeIn,
       duration: Duration(milliseconds: 700),
     );
+  }
+
+  navigateToStoryDetailPage(storyList, currentIndex) {
+    //this will once load facebook ads and once admob ads
+    if (Constant.facebooknative)
+      Constant.facebooknative = false;
+    else
+      Constant.facebooknative = true;
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => StoryDetail(storyList, currentIndex)));
   }
 }

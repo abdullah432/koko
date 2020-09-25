@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:kuku/utils/constant.dart';
 import 'package:date_format/date_format.dart';
+import 'package:facebook_audience_network/ad/ad_native.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:kuku/utils/mycustomadmob.dart';
 
 class StoryDetail extends StatefulWidget {
   final Story story;
@@ -27,12 +27,18 @@ class StoryDetailState extends State<StoryDetail> {
   StoryDetailState(this.story, this.currentIndex);
 
   // native ad
-  static const _adUnitID = "ca-app-pub-5554760537482883/6765369733";
+  static const _adUnitID = "ca-app-pub-5554760537482883/4297761131";
 
   final _nativeAdController = NativeAdmobController();
   double _height = 0;
 
   StreamSubscription _subscription;
+
+  // //for facebook native ad
+  // Widget _currentAd = SizedBox(
+  //   width: 0.0,
+  //   height: 0.0,
+  // );
 
   @override
   void initState() {
@@ -215,19 +221,9 @@ class StoryDetailState extends State<StoryDetail> {
                             ),
                             //space
                             SizedBox(height: 10.0),
-                            //native ad widget
-                            Container(
-                              height: _height,
-                              padding: EdgeInsets.all(10),
-                              margin: EdgeInsets.only(bottom: 20.0),
-                              child: NativeAdmob(
-                                // Your ad unit id
-                                adUnitID: _adUnitID,
-                                controller: _nativeAdController,
-                                // Don't show loading widget when in loading state
-                                loading: Container(),
-                              ),
-                            ),
+                            Constant.facebooknative
+                                ? _facebookNativeAd()
+                                : _admobNativeAd(),
                           ],
                         ),
                       ),
@@ -238,5 +234,44 @@ class StoryDetailState extends State<StoryDetail> {
             }),
       ],
     ));
+  }
+
+  _admobNativeAd() {
+    return Container(
+      height: _height,
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(bottom: 20.0),
+      child: NativeAdmob(
+        // Your ad unit id
+        adUnitID: _adUnitID,
+        controller: _nativeAdController,
+        // Don't show loading widget when in loading state
+        loading: Container(),
+      ),
+    );
+  }
+
+  _facebookNativeAd() {
+    return FacebookNativeAd(
+      placementId: "3663243730352300_3663359137007426",
+      adType: NativeAdType.NATIVE_AD,
+      width: double.infinity,
+      height: 300,
+      backgroundColor: Colors.blue,
+      titleColor: Colors.white,
+      descriptionColor: Colors.white,
+      buttonColor: Colors.deepPurple,
+      buttonTitleColor: Colors.white,
+      buttonBorderColor: Colors.white,
+      keepAlive:
+          true, //set true if you do not want adview to refresh on widget rebuild
+      keepExpandedWhileLoading:
+          false, // set false if you want to collapse the native ad view when the ad is loading
+      expandAnimationDuraion:
+          300, //in milliseconds. Expands the adview with animation when ad is loaded
+      listener: (result, value) {
+        print("Native Ad: $result --> $value");
+      },
+    );
   }
 }

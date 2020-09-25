@@ -20,6 +20,7 @@ class Constant {
 
   //ads: videoAd = true means show video ad
   static bool videoAd = true;
+  static bool facebooknative = true;
 
   //functions
   static DateTime getActiveStoryDate(String value) {

@@ -1,3 +1,4 @@
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:kuku/screens/rootpage.dart';
@@ -14,7 +15,13 @@ void main() async {
   await Firebase.initializeApp();
   await loadSettings();
   //admob ads initialize
-  FirebaseAdMob.instance.initialize(appId: "ca-app-pub-5554760537482883~8172684706");
+  FirebaseAdMob.instance
+      .initialize(appId: "ca-app-pub-3940256099942544~3347511713");
+  //facebook ads
+  FacebookAudienceNetwork.init(
+    testingId: "37b1da9d-b48c-4103-a393-2e095e734bd6", //optional
+  );
+
   runApp(MyApp());
 }
 
@@ -33,7 +40,7 @@ class MyApp extends StatelessWidget {
         auth: Auth(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'kuku',
+          title: 'KUKU',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             cursorColor: Colors.white54,
