@@ -1,9 +1,11 @@
 import 'package:kuku/model/Story.dart';
 import 'package:flutter/material.dart';
+import 'package:kuku/styles/gradientcolors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Constant {
   static Color selectedColor = color1;
+  static LinearGradient selectedGradient = GradientColors.gradient1;
 
   static Color color1 = Color.fromRGBO(253, 152, 86, 1.0);
   static Color color2 = Color.fromRGBO(235, 223, 217, 1.0);
@@ -12,6 +14,7 @@ class Constant {
   static Color color5 = Color.fromRGBO(30, 32, 41, 1.0);
 
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
+  static List<Color> listOfPremium = [];
 
   //List of feeling
   static List<String> listOfFeelings = ['SAD', 'COMPLETELY OK', 'HAPPY'];

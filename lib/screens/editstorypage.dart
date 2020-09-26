@@ -1,4 +1,5 @@
 import 'package:date_format/date_format.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:kuku/model/Story.dart';
@@ -42,6 +43,8 @@ class EditStoryPageState extends State<EditStoryPage> {
     _whatHappenedController.text = story.whatHappened;
     _dailyNotesController.text = story.note;
     super.initState();
+
+    _loadInterstitialAd();
   }
 
   @override
@@ -152,7 +155,7 @@ class EditStoryPageState extends State<EditStoryPage> {
                               setState(() {
                                 _selectedFeeling = newValue;
                                 //unfocus title textfield
-                                _titleFocusNode.unfocus();
+                                _titleFocusNode.nextFocus();
                               });
                             },
                             value: _selectedFeeling,
@@ -266,8 +269,10 @@ class EditStoryPageState extends State<EditStoryPage> {
 
                         if (result != 'success')
                           showInSnackBar(result);
-                        else
+                        else {
+                          _showInterstitialAd();
                           Navigator.pop(context, story);
+                        }
                       },
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -284,25 +289,26 @@ class EditStoryPageState extends State<EditStoryPage> {
                       ),
                     ),
                   ),
-                  // Center(
-                  //     child: Text(
-                  //   'Ad may appear after click on update button. Only once',
-                  //   style: TextStyle(fontSize: 10),
-                  // ))
+                  //space
+                  SizedBox(height: 5.0),
                   Center(
-                    child: RichText(
-                      text: TextSpan(
-                          text: 'Ad may appear after click on update button.',
-                          style: TextStyle(color: Colors.black, fontSize: 10),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: ' Only once',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 10),
-                            )
-                          ]),
-                    ),
+                      child: Text(
+                    'Ad may appear after click on update button.',
+                    style: TextStyle(color: Colors.black, fontSize: 10)
                   )
+                      // RichText(
+                      //   text: TextSpan(
+                      //       text: 'Ad may appear after click on update button.',
+                      //       style: TextStyle(color: Colors.black, fontSize: 10),
+                      //       children: <TextSpan>[
+                      //         TextSpan(
+                      //           text: ' Only once',
+                      //           style: TextStyle(
+                      //               fontWeight: FontWeight.bold, fontSize: 10),
+                      //         )
+                      //       ]),
+                      // ),
+                      )
                 ],
               ),
             ),
@@ -313,5 +319,27 @@ class EditStoryPageState extends State<EditStoryPage> {
   void showInSnackBar(String value) {
     _scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(value)));
+  }
+
+  //facebook audience network
+  void _loadInterstitialAd() {
+    FacebookInterstitialAd.loadInterstitialAd(
+      placementId: "3663243730352300_3663613440315329",
+      listener: (result, value) {
+        print(">> FAN > Interstitial Ad: $result --> $value");
+
+        /// Once an Interstitial Ad has been dismissed and becomes invalidated,
+        /// load a fresh Ad by calling this function.
+        if (result == InterstitialAdResult.ERROR &&
+            value["invalidated"] == true) {
+          print('Ad is reload again');
+          _loadInterstitialAd();
+        }
+      },
+    );
+  }
+
+  _showInterstitialAd() {
+    FacebookInterstitialAd.showInterstitialAd();
   }
 }

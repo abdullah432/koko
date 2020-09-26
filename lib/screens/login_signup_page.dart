@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/model/authentication.dart';
-import 'package:kuku/styles/theme.dart' as Theme;
 import 'package:kuku/utils/bubble_indication_painter.dart';
 import 'package:kuku/utils/constant.dart';
 import 'forgotpasswordpage.dart';
@@ -69,7 +68,8 @@ class _LoginPageState extends State<LoginPage>
                   height: MediaQuery.of(context).size.height >= 775.0
                       ? MediaQuery.of(context).size.height
                       : 775.0,
-                  color: Constant.selectedColor,
+                  // color: Constant.selectedColor,
+                  decoration: BoxDecoration(gradient: Constant.selectedGradient),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
@@ -320,7 +320,7 @@ class _LoginPageState extends State<LoginPage>
                 elevation: 4.0,
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
+                    splashColor: const Color(0xFFf7418c),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 42.0),
@@ -501,7 +501,7 @@ class _LoginPageState extends State<LoginPage>
                 elevation: 4,
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
+                    splashColor: const Color(0xFFf7418c),
                     //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

@@ -185,13 +185,13 @@ class HomePageState extends State<HomePage> {
         ]));
   }
 
-  Widget storyPages(Story storyList, bool active, currentIndex) {
+  Widget storyPages(Story story, bool active, currentIndex) {
     height = active ? 380 : 350;
     width = active ? 300 : 250;
     return Center(
         child: GestureDetector(
             onTap: () {
-              navigateToStoryDetailPage(storyList, currentIndex);
+              navigateToStoryDetailPage(story, currentIndex);
             },
             child: Hero(
               tag: 'hero$currentIndex',
@@ -204,7 +204,7 @@ class HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: Constant.getImageAsset(storyList),
+                    image: Constant.getImageAsset(story),
                   ),
                 ),
                 child: Column(
@@ -219,8 +219,7 @@ class HomePageState extends State<HomePage> {
                                 width: 80,
                                 child: Text(
                                   formatDate(
-                                      Constant.getActiveStoryDate(
-                                          storyList.date),
+                                      Constant.getActiveStoryDate(story.date),
                                       [dd, ' ', MM, ' ', yyyy]),
                                   style: TextStyle(
                                       color: Colors.white,
@@ -230,7 +229,7 @@ class HomePageState extends State<HomePage> {
                               )),
                           FlatButton(
                             onPressed: () {
-                              showDeleteAlert(storyList);
+                              showDeleteAlert(story);
                             },
                             child: Icon(
                               Icons.delete,
@@ -244,7 +243,7 @@ class HomePageState extends State<HomePage> {
                       child: Align(
                           alignment: Alignment.bottomLeft,
                           child: Text(
-                            getActiveStoryTitle(storyList),
+                            getActiveStoryTitle(story),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -445,16 +444,28 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  navigateToStoryDetailPage(storyList, currentIndex) {
+  navigateToStoryDetailPage(story, currentIndex) async {
     //this will once load facebook ads and once admob ads
     if (Constant.facebooknative)
       Constant.facebooknative = false;
     else
       Constant.facebooknative = true;
 
-    Navigator.push(
+    Story returnStory = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => StoryDetail(storyList, currentIndex)));
+            builder: (context) => StoryDetail(story, currentIndex)));
+
+    if (returnStory != null) {
+      if (this.mounted) {
+        setState(() {
+          print('index to be updated: ' + currentIndex.toString());
+          storyList[currentIndex - 2] = returnStory;
+          print('story is edited on detail page');
+        });
+      }
+    } else {
+      print('No editing on detail page');
+    }
   }
 }

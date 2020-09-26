@@ -1,3 +1,4 @@
+import 'package:facebook_audience_network/ad/ad_interstitial.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 
 class MyCustomAdmob {
@@ -38,15 +39,4 @@ class MyCustomAdmob {
       },
     );
   }
-
-  // NativeAd createNativeAd() {
-  //   return NativeAd(
-  //     adUnitId: "ca-app-pub-5554760537482883/6765369733",
-  //     factoryId: 'adFactoryExample',
-  //     targetingInfo: targetingInfo,
-  //     listener: (MobileAdEvent event) {
-  //       print("$NativeAd event $event");
-  //     },
-  //   );
-  // }
 }

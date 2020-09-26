@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/form_validator.dart';
-import 'package:kuku/styles/theme.dart' as Theme;
 import 'package:kuku/model/authentication.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -66,7 +65,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 elevation: 4.0,
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
+                    splashColor: const Color(0xFFf7418c),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 42.0),
