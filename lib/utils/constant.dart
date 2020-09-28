@@ -4,8 +4,14 @@ import 'package:kuku/styles/gradientcolors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Constant {
+  //setting loaded
+  static bool settingLoaded = false;
+
+  static var unlockTheme;
+  static bool primiumThemeSelected;
   static Color selectedColor = color1;
   static LinearGradient selectedGradient = GradientColors.gradient1;
+  static LinearGradient selectedButtonColor = GradientColors.gradientbutton1;
 
   static Color color1 = Color.fromRGBO(253, 152, 86, 1.0);
   static Color color2 = Color.fromRGBO(235, 223, 217, 1.0);
@@ -14,7 +20,8 @@ class Constant {
   static Color color5 = Color.fromRGBO(30, 32, 41, 1.0);
 
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
-  static List<Color> listOfPremium = [];
+  static List<LinearGradient> listOfPremium = [GradientColors.gradient1];
+  static List<LinearGradient> listOfPremiumButtons = [GradientColors.gradientbutton1];
 
   //List of feeling
   static List<String> listOfFeelings = ['SAD', 'COMPLETELY OK', 'HAPPY'];
@@ -105,5 +112,19 @@ class Constant {
       return 'Afternoon';
     }
     return 'Evening';
+  }
+
+  //load setting
+  static loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    int selectedThemIndex = prefs.getInt('selectedThemIndex') ?? 0;
+    primiumThemeSelected = prefs.getBool('primiumThemeSelected') ?? false;
+    //Now initialize selectedColor
+    if (primiumThemeSelected) {
+      Constant.selectedGradient = Constant.listOfPremium[selectedThemIndex];
+      Constant.selectedGradient = Constant.listOfPremiumButtons[selectedThemIndex];
+    }
+    else
+      Constant.selectedColor = Constant.listOfColors[selectedThemIndex];
   }
 }

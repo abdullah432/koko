@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:kuku/screens/rootpage.dart';
 import 'package:flutter/material.dart';
 import 'package:kuku/utils/constant.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'model/auth_provider.dart';
 import 'model/authentication.dart';
@@ -13,7 +12,8 @@ import 'model/authentication.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await loadSettings();
+  await Constant.loadSettings();
+  
   //admob ads initialize
   FirebaseAdMob.instance
       .initialize(appId: "ca-app-pub-3940256099942544~3347511713");
@@ -23,13 +23,6 @@ void main() async {
   );
 
   runApp(MyApp());
-}
-
-loadSettings() async {
-  final prefs = await SharedPreferences.getInstance();
-  final colorIndex = prefs.getInt('colorIndex') ?? 0;
-  //Now initialize selectedColor
-  Constant.selectedColor = Constant.listOfColors[colorIndex];
 }
 
 class MyApp extends StatelessWidget {
@@ -43,7 +36,6 @@ class MyApp extends StatelessWidget {
           title: 'KUKU',
           theme: ThemeData(
             primarySwatch: Colors.blue,
-            cursorColor: Colors.white54,
           ),
           home: RootPage(),
         ));

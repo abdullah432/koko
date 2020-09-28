@@ -2,6 +2,10 @@ import 'package:kuku/screens/settings/webviewpage.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kuku/widgets/gradientappbar.dart';
+import 'package:kuku/widgets/gradienticons.dart';
+import 'package:kuku/widgets/gradienttext.dart';
+import 'package:kuku/widgets/premiumcontainer.dart';
 import 'profileupdatepage.dart';
 
 class SettingPage extends StatefulWidget {
@@ -20,32 +24,50 @@ class SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Constant.selectedColor,
         appBar: AppBar(
           backgroundColor: Constant.selectedColor,
           title: Text('Settings'),
+          // title: GradientText(text: 'Settings', size: 20.0, gradient: Constant.selectedButtonColor,)
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: ListView.builder(
-              itemCount: listOfItems.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(listOfItems[index], style: TextStyle(color: Constant.selectedColor,)),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Constant.selectedColor,
-                    ),
-                    onTap: () => onListTileTap(index),
-                  ),
-                );
-              }),
+        body: PremiumContainer(
+          child: mainBody(),
         ));
   }
 
+  Widget mainBody() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: ListView.builder(
+          itemCount: listOfItems.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: GradientText(text: listOfItems[index], gradient: Constant.selectedButtonColor, size: 20.0,),
+                // Text(
+                //   listOfItems[index],
+                  
+                //   style: TextStyle(
+                //     color: Constant.selectedColor,
+                //   ),
+                // ),
+                trailing: GradientIcon(
+                  icon: Icons.arrow_forward_ios,
+                  gradient: Constant.selectedButtonColor,
+                  size: 20,
+                ),
+                // Icon(
+                //   Icons.arrow_forward_ios,
+                //   color: Constant.selectedColor,
+                // ),
+                onTap: () => onListTileTap(index),
+              ),
+            );
+          }),
+    );
+  }
+
   onListTileTap(index) {
-    switch(index) {
+    switch (index) {
       case 0:
         navigateToPage(ProfileUpdate());
         break;

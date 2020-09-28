@@ -30,8 +30,6 @@ class Auth implements BaseAuth {
 
   @override
   Stream<String> get onAuthStateChanged {
-    // return _firebaseAuth.onAuthStateChanged
-    //     .map((FirebaseUser user) => user?.uid);
     return _firebaseAuth.authStateChanges().map((user) => user?.uid);
   }
 
@@ -128,11 +126,16 @@ class Auth implements BaseAuth {
   }
 
   void createRecord(name, uid) async {
-    await db.collection("users").doc(uid).set({'name': name});
+    db.collection("users").doc(uid).set({'name': name});
+    db.collection("users").doc(uid).collection("setting").doc('themesetting').set({
+      'primiumThemeSelected': false,
+      'selectedThemIndex': 0,
+      'unlockTheme': []
+    });
   }
 
   @override
   Future<void> sendPasswordResetEmail({String email}) async {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 }

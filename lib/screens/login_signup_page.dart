@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/model/authentication.dart';
+import 'package:kuku/styles/gradientcolors.dart';
 import 'package:kuku/utils/bubble_indication_painter.dart';
 import 'package:kuku/utils/constant.dart';
+import 'package:kuku/widgets/nonpremiumbutton.dart';
+import 'package:kuku/widgets/premiumbutton.dart';
+import 'package:kuku/widgets/premiumcontainer.dart';
+import 'package:kuku/widgets/nonpremiumcontainer.dart';
 import 'forgotpasswordpage.dart';
 
 import 'home_page.dart';
@@ -54,7 +59,7 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Constant.selectedColor,
+      // backgroundColor: Constant.selectedColor,
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overscroll) {
@@ -63,61 +68,9 @@ class _LoginPageState extends State<LoginPage>
           child: Form(
               key: _formKey,
               child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height >= 775.0
-                      ? MediaQuery.of(context).size.height
-                      : 775.0,
-                  // color: Constant.selectedColor,
-                  decoration: BoxDecoration(gradient: Constant.selectedGradient),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 50.0),
-                        child: new Image(
-                            width: 80.0,
-                            height: 80.0,
-                            fit: BoxFit.cover,
-                            image: new AssetImage('images/logo.png')),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: _buildMenuBar(context),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: PageView(
-                          controller: _pageController,
-                          onPageChanged: (i) {
-                            if (i == 0) {
-                              setState(() {
-                                right = Colors.white;
-                                left = Colors.black;
-                              });
-                            } else if (i == 1) {
-                              setState(() {
-                                right = Colors.black;
-                                left = Colors.white;
-                              });
-                            }
-                          },
-                          children: <Widget>[
-                            new ConstrainedBox(
-                              constraints: const BoxConstraints.expand(),
-                              child: _buildSignIn(context),
-                            ),
-                            new ConstrainedBox(
-                              constraints: const BoxConstraints.expand(),
-                              child: _buildSignUp(context),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ))),
+                  child: Constant.primiumThemeSelected
+                      ? PremiumContainer(child: _mainBody())
+                      : NonPremiumContainer(child: _mainBody())))),
     );
   }
 
@@ -129,13 +82,6 @@ class _LoginPageState extends State<LoginPage>
     myFocusNodePassword.dispose();
     myFocusNodeEmail.dispose();
     myFocusNodeName.dispose();
-
-    // loginEmailController.dispose();
-    // loginEmailController.dispose();
-
-    // signupEmailController.dispose();
-    // signupNameController.dispose();
-    // signupPasswordController.dispose();
 
     _pageController?.dispose();
     super.dispose();
@@ -151,6 +97,55 @@ class _LoginPageState extends State<LoginPage>
     ]);
 
     _pageController = PageController();
+  }
+
+  Widget _mainBody() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 50.0),
+          child: new Image(
+              width: 80.0,
+              height: 80.0,
+              fit: BoxFit.cover,
+              image: new AssetImage('images/logo.png')),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: _buildMenuBar(context),
+        ),
+        Expanded(
+          flex: 2,
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (i) {
+              if (i == 0) {
+                setState(() {
+                  right = Colors.white;
+                  left = Colors.black;
+                });
+              } else if (i == 1) {
+                setState(() {
+                  right = Colors.black;
+                  left = Colors.white;
+                });
+              }
+            },
+            children: <Widget>[
+              new ConstrainedBox(
+                constraints: const BoxConstraints.expand(),
+                child: _buildSignIn(context),
+              ),
+              new ConstrainedBox(
+                constraints: const BoxConstraints.expand(),
+                child: _buildSignUp(context),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   void showInSnackBar(String value) {
@@ -228,7 +223,6 @@ class _LoginPageState extends State<LoginPage>
         children: <Widget>[
           Stack(
             alignment: Alignment.topCenter,
-            overflow: Overflow.visible,
             children: <Widget>[
               Card(
                 elevation: 2.0,
@@ -314,26 +308,11 @@ class _LoginPageState extends State<LoginPage>
                   ),
                 ),
               ),
-              Card(
-                margin: EdgeInsets.only(top: 190.0),
-                color: Constant.selectedColor,
-                elevation: 4.0,
-                child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: const Color(0xFFf7418c),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "LOGIN",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25.0,
-                        ),
-                      ),
-                    ),
-                    onPressed: () => loginButtonPressed()),
-              ),
+              Constant.primiumThemeSelected
+                  ? PremiumButton(
+                      text: 'LOGIN', onTap: () => loginButtonPressed())
+                  : NonPremiumButton(
+                      text: 'LOGIN', onTap: () => loginButtonPressed()),
             ],
           ),
           Padding(
@@ -380,7 +359,6 @@ class _LoginPageState extends State<LoginPage>
         children: <Widget>[
           Stack(
             alignment: Alignment.topCenter,
-            overflow: Overflow.visible,
             children: <Widget>[
               Card(
                 elevation: 2.0,
@@ -495,10 +473,32 @@ class _LoginPageState extends State<LoginPage>
                   ),
                 ),
               ),
-              Card(
+              Container(
                 margin: EdgeInsets.only(top: 270.0),
-                color: Constant.selectedColor,
-                elevation: 4,
+                decoration: new BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: GradientColors.gradient1Start,
+                      offset: Offset(1.0, 6.0),
+                      blurRadius: 20.0,
+                    ),
+                    BoxShadow(
+                      color: GradientColors.gradient1End,
+                      offset: Offset(1.0, 6.0),
+                      blurRadius: 20.0,
+                    ),
+                  ],
+                  gradient: new LinearGradient(
+                      colors: [
+                        GradientColors.gradient1End,
+                        GradientColors.gradient1Start
+                      ],
+                      begin: const FractionalOffset(0.2, 0.2),
+                      end: const FractionalOffset(1.0, 1.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp),
+                ),
                 child: MaterialButton(
                     highlightColor: Colors.transparent,
                     splashColor: const Color(0xFFf7418c),

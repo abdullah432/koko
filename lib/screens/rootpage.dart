@@ -5,9 +5,9 @@ import 'package:kuku/screens/login_signup_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kuku/utils/constant.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RootPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     final BaseAuth auth = AuthProvider.of(context).auth;
@@ -15,18 +15,18 @@ class RootPage extends StatelessWidget {
       stream: auth.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
+          print('done');
           final bool isLoggedIn = snapshot.hasData;
           String uid = snapshot.data;
           Constant.useruid = uid;
-          // debugPrint('data: '+uid.toString());
+
           return isLoggedIn ? HomePage() : LoginPage();
         }
-        return WaitingPage();
-        //should return splash screen here
+
+        return CircularProgressIndicator();
       },
     );
   }
-
 }
 
 class WaitingPage extends StatelessWidget {

@@ -11,6 +11,9 @@ import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kuku/utils/mycustomadmob.dart';
+import 'package:kuku/widgets/gradienticons.dart';
+import 'package:kuku/widgets/nonpremiumanimatedcontainer.dart';
+import 'package:kuku/widgets/premiumanimatedcontainer.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:kuku/widgets/dropdownpopup.dart';
 
@@ -147,41 +150,49 @@ class HomePageState extends State<HomePage> {
                   navigateToSettingPage();
                 },
                 child: CustomDropDownPopup(),
-                // Icon(
-                //   Icons.settings,
-                //   color: Constant.selectedColor,
-                //   size: 30,
-                // ),
               )),
           //setting button
           Positioned(
-              bottom: 35.0,
-              right: 12.0,
-              child: GestureDetector(
-                onTap: () {
-                  // print(pageController.page.toString());
-                  setState(() {
-                    if (!reachToEnd) {
-                      moveToEndOfPage();
-                      reachToEnd = true;
-                    } else {
-                      moveToFirstPage();
-                      reachToEnd = false;
-                    }
-                  });
-                },
-                child: reachToEnd
-                    ? Icon(
-                        FlutterIcons.backward_faw,
-                        color: Constant.selectedColor,
-                        size: 30,
-                      )
-                    : Icon(
-                        FlutterIcons.forward_faw5s,
-                        color: Constant.selectedColor,
-                        size: 30,
-                      ),
-              )),
+            bottom: 35.0,
+            right: 12.0,
+            child: GestureDetector(
+              onTap: () {
+                // print(pageController.page.toString());
+                setState(() {
+                  if (!reachToEnd) {
+                    moveToEndOfPage();
+                    reachToEnd = true;
+                  } else {
+                    moveToFirstPage();
+                    reachToEnd = false;
+                  }
+                });
+              },
+              child: reachToEnd
+                  ? (Constant.primiumThemeSelected
+                      ? GradientIcon(
+                          icon: FlutterIcons.backward_faw,
+                          size: 30,
+                          gradient: Constant.selectedButtonColor,
+                        )
+                      : Icon(
+                          FlutterIcons.backward_faw,
+                          color: Constant.selectedColor,
+                          size: 30,
+                        ))
+                  : (Constant.primiumThemeSelected
+                      ? GradientIcon(
+                          icon: FlutterIcons.forward_faw5s,
+                          size: 30,
+                          gradient: Constant.selectedButtonColor,
+                        )
+                      : Icon(
+                          FlutterIcons.forward_faw5s,
+                          color: Constant.selectedColor,
+                          size: 30,
+                        )),
+            ),
+          ),
         ]));
   }
 
@@ -316,32 +327,9 @@ class HomePageState extends State<HomePage> {
             },
             child: Hero(
               tag: 'addstory',
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeOutQuint,
-                height: height,
-                width: width,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Constant.selectedColor),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.add, color: Colors.white, size: 80),
-                    Container(
-                      height: 15,
-                    ),
-                    Text(
-                      "ADD TODAY'S STORY",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontFamily: 'Raleway'),
-                    ),
-                  ],
-                ),
-              ),
+              child: Constant.primiumThemeSelected
+                  ? PremiumAnimatedContainer(height: height, width: width)
+                  : NonPremiumAnimatedContainer(height: height, width: width),
             )));
   }
 

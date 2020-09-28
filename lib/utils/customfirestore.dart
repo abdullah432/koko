@@ -137,4 +137,26 @@ class CustomFirestore {
     String url = documentSnapshot.data()['privacypolicy'];
     return url;
   }
+
+  Future<bool> loadUserSetting({@required uid}) async {
+    DocumentSnapshot documentSnapshot = await db
+        .collection('users')
+        .doc(uid)
+        .collection('setting')
+        .doc('themesetting')
+        .get();
+
+    Constant.primiumThemeSelected =
+        documentSnapshot.data()['primiumThemeSelected'];
+    int selectedThemIndex = documentSnapshot.data()['selectedThemIndex'];
+    if (!Constant.primiumThemeSelected) {
+      Constant.selectedColor = Constant.listOfColors[selectedThemIndex];
+      Constant.unlockTheme = documentSnapshot.data()['unlockTheme'];
+      print('unlockTheme: ' + Constant.unlockTheme);
+    } else {
+      Constant.selectedGradient = Constant.listOfPremium[selectedThemIndex];
+    }
+
+    return true;
+  }
 }
