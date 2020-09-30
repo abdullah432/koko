@@ -51,7 +51,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _customFirestore.loadUserName(userid: Constant.useruid);
     super.initState();
 
     pageController.addListener(() {
@@ -173,7 +172,7 @@ class HomePageState extends State<HomePage> {
                       ? GradientIcon(
                           icon: FlutterIcons.backward_faw,
                           size: 30,
-                          gradient: Constant.selectedButtonColor,
+                          gradient: Constant.selectedButtonGradient,
                         )
                       : Icon(
                           FlutterIcons.backward_faw,
@@ -184,7 +183,7 @@ class HomePageState extends State<HomePage> {
                       ? GradientIcon(
                           icon: FlutterIcons.forward_faw5s,
                           size: 30,
-                          gradient: Constant.selectedButtonColor,
+                          gradient: Constant.selectedButtonGradient,
                         )
                       : Icon(
                           FlutterIcons.forward_faw5s,

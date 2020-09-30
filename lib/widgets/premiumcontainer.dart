@@ -3,7 +3,8 @@ import 'package:kuku/utils/constant.dart';
 
 class PremiumContainer extends StatelessWidget {
   final child;
-  const PremiumContainer({@required this.child, Key key}) : super(key: key);
+  LinearGradient gradient;
+  PremiumContainer({@required this.child, @required this.gradient, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class PremiumContainer extends StatelessWidget {
       height: MediaQuery.of(context).size.height >= 775.0
           ? MediaQuery.of(context).size.height
           : 775.0,
-      decoration: BoxDecoration(gradient: Constant.selectedGradient),
+      decoration: BoxDecoration(gradient: gradient),
       child: child,
     );
   }

@@ -20,4 +20,7 @@ class GradientColors {
       end: const FractionalOffset(1.0, 1.0),
       stops: [0.0, 1.0],
       tileMode: TileMode.clamp);
+
+  //list of gradient start color
+  static List<Color> listOfGradientStartColor = [gradient1Start];
 }

@@ -3,7 +3,8 @@ import 'package:kuku/utils/constant.dart';
 
 class NonPremiumContainer extends StatelessWidget {
   final child;
-  const NonPremiumContainer({@required this.child, Key key}) : super(key: key);
+  Color color;
+  NonPremiumContainer({@required this.child, @required this.color, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class NonPremiumContainer extends StatelessWidget {
       height: MediaQuery.of(context).size.height >= 775.0
           ? MediaQuery.of(context).size.height
           : 775.0,
-      color: Constant.selectedColor,
+      color: color,
       child: child,
     );
   }

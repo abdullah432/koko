@@ -37,7 +37,7 @@ class SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Constant.selectedColor,
+      // backgroundColor: Constant.selectedColor,
       body: GestureDetector(
         onTap: () {
           _focusNode.unfocus();

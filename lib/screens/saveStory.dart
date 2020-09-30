@@ -27,16 +27,17 @@ class SaveStoryState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Constant.selectedColor,
-      resizeToAvoidBottomPadding: false,
-      body: Constant.primiumThemeSelected
-          ? PremiumContainer(
-              child: mainBody(),
-            )
-          : NonPremiumContainer(
-              child: mainBody(),
-            ),
-    );
+        backgroundColor: Constant.selectedColor,
+        resizeToAvoidBottomPadding: false,
+        body: Constant.primiumThemeSelected
+            ? PremiumContainer(
+                child: mainBody(),
+                gradient: Constant.selectedGradient,
+              )
+            : NonPremiumContainer(
+                child: mainBody(),
+                color: Constant.selectedColor,
+              ));
   }
 
   Widget mainBody() {

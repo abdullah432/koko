@@ -69,8 +69,14 @@ class _LoginPageState extends State<LoginPage>
               key: _formKey,
               child: SingleChildScrollView(
                   child: Constant.primiumThemeSelected
-                      ? PremiumContainer(child: _mainBody())
-                      : NonPremiumContainer(child: _mainBody())))),
+                      ? PremiumContainer(
+                          child: mainBody(),
+                          gradient: Constant.selectedGradient,
+                        )
+                      : NonPremiumContainer(
+                          child: mainBody(),
+                          color: Constant.selectedColor,
+                        )))),
     );
   }
 
@@ -99,7 +105,7 @@ class _LoginPageState extends State<LoginPage>
     _pageController = PageController();
   }
 
-  Widget _mainBody() {
+  Widget mainBody() {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[

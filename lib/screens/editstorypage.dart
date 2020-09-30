@@ -292,23 +292,8 @@ class EditStoryPageState extends State<EditStoryPage> {
                   //space
                   SizedBox(height: 5.0),
                   Center(
-                      child: Text(
-                    'Ad may appear after click on update button.',
-                    style: TextStyle(color: Colors.black, fontSize: 10)
-                  )
-                      // RichText(
-                      //   text: TextSpan(
-                      //       text: 'Ad may appear after click on update button.',
-                      //       style: TextStyle(color: Colors.black, fontSize: 10),
-                      //       children: <TextSpan>[
-                      //         TextSpan(
-                      //           text: ' Only once',
-                      //           style: TextStyle(
-                      //               fontWeight: FontWeight.bold, fontSize: 10),
-                      //         )
-                      //       ]),
-                      // ),
-                      )
+                      child: Text('Ad may appear after click on update button.',
+                          style: TextStyle(color: Colors.black, fontSize: 10)))
                 ],
               ),
             ),

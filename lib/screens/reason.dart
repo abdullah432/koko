@@ -36,8 +36,12 @@ class ReasonPageState extends State<ReasonPage> {
             child: Constant.primiumThemeSelected
                 ? PremiumContainer(
                     child: mainBody(),
+                    gradient: Constant.selectedGradient,
                   )
-                : NonPremiumContainer(child: mainBody())));
+                : NonPremiumContainer(
+                    child: mainBody(),
+                    color: Constant.selectedColor,
+                  )));
   }
 
   Widget mainBody() {

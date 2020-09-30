@@ -23,10 +23,14 @@ class FeelingPageState extends State<FeelingPage> {
     return Scaffold(
         body: SizedBox.expand(
             child: Constant.primiumThemeSelected
-                    ? PremiumContainer(
-                        child: mainBody(),
-                      )
-                    : NonPremiumContainer(child: mainBody())));
+                ? PremiumContainer(
+                    child: mainBody(),
+                    gradient: Constant.selectedGradient,
+                  )
+                : NonPremiumContainer(
+                    child: mainBody(),
+                    color: Constant.selectedColor,
+                  )));
   }
 
   Widget mainBody() {

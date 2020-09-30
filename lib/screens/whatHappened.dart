@@ -29,8 +29,12 @@ class WhatHappenedState extends State<WhatHappened> {
             child: Constant.primiumThemeSelected
                 ? PremiumContainer(
                     child: mainBody(),
+                    gradient: Constant.selectedGradient,
                   )
-                : NonPremiumContainer(child: mainBody())));
+                : NonPremiumContainer(
+                    child: mainBody(),
+                    color: Constant.selectedColor,
+                  )));
   }
 
   mainBody() {

@@ -7,11 +7,12 @@ class Constant {
   //setting loaded
   static bool settingLoaded = false;
 
-  static var unlockTheme;
+  static List<bool> unlockTheme = [];
   static bool primiumThemeSelected;
   static Color selectedColor = color1;
+  static Color gradientStartColor;
   static LinearGradient selectedGradient = GradientColors.gradient1;
-  static LinearGradient selectedButtonColor = GradientColors.gradientbutton1;
+  static LinearGradient selectedButtonGradient = GradientColors.gradientbutton1;
 
   static Color color1 = Color.fromRGBO(253, 152, 86, 1.0);
   static Color color2 = Color.fromRGBO(235, 223, 217, 1.0);
@@ -21,7 +22,9 @@ class Constant {
 
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
   static List<LinearGradient> listOfPremium = [GradientColors.gradient1];
-  static List<LinearGradient> listOfPremiumButtons = [GradientColors.gradientbutton1];
+  static List<LinearGradient> listOfPremiumButtons = [
+    GradientColors.gradientbutton1
+  ];
 
   //List of feeling
   static List<String> listOfFeelings = ['SAD', 'COMPLETELY OK', 'HAPPY'];
@@ -121,10 +124,11 @@ class Constant {
     primiumThemeSelected = prefs.getBool('primiumThemeSelected') ?? false;
     //Now initialize selectedColor
     if (primiumThemeSelected) {
-      Constant.selectedGradient = Constant.listOfPremium[selectedThemIndex];
-      Constant.selectedGradient = Constant.listOfPremiumButtons[selectedThemIndex];
-    }
-    else
+      selectedGradient = Constant.listOfPremium[selectedThemIndex];
+      selectedButtonGradient = Constant.listOfPremiumButtons[selectedThemIndex];
+      gradientStartColor =
+          GradientColors.listOfGradientStartColor[selectedThemIndex];
+    } else
       Constant.selectedColor = Constant.listOfColors[selectedThemIndex];
   }
 }

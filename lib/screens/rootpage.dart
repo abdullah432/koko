@@ -5,21 +5,24 @@ import 'package:kuku/screens/login_signup_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kuku/utils/constant.dart';
+import 'package:kuku/utils/customfirestore.dart';
 
 class RootPage extends StatelessWidget {
-
+  CustomFirestore _customFirestore = CustomFirestore();
   @override
   Widget build(BuildContext context) {
     final BaseAuth auth = AuthProvider.of(context).auth;
     return StreamBuilder<String>(
       stream: auth.onAuthStateChanged,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        print('hi');
         if (snapshot.connectionState == ConnectionState.active) {
-          print('done');
           final bool isLoggedIn = snapshot.hasData;
           String uid = snapshot.data;
           Constant.useruid = uid;
-
+          //now load user name and setting (one time per app use)
+          _customFirestore.loadUserName(userid: Constant.useruid);
+          _customFirestore.loadUserSetting(uid: Constant.useruid);
           return isLoggedIn ? HomePage() : LoginPage();
         }
 

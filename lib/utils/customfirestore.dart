@@ -138,7 +138,7 @@ class CustomFirestore {
     return url;
   }
 
-  Future<bool> loadUserSetting({@required uid}) async {
+  Future loadUserSetting({@required uid}) async {
     DocumentSnapshot documentSnapshot = await db
         .collection('users')
         .doc(uid)
@@ -146,17 +146,7 @@ class CustomFirestore {
         .doc('themesetting')
         .get();
 
-    Constant.primiumThemeSelected =
-        documentSnapshot.data()['primiumThemeSelected'];
-    int selectedThemIndex = documentSnapshot.data()['selectedThemIndex'];
-    if (!Constant.primiumThemeSelected) {
-      Constant.selectedColor = Constant.listOfColors[selectedThemIndex];
-      Constant.unlockTheme = documentSnapshot.data()['unlockTheme'];
-      print('unlockTheme: ' + Constant.unlockTheme);
-    } else {
-      Constant.selectedGradient = Constant.listOfPremium[selectedThemIndex];
-    }
-
-    return true;
+    Constant.unlockTheme = List<bool>.from(documentSnapshot.data()['unlockTheme']);
+    print('unlock Theme data loaded: ' + Constant.unlockTheme.toString());
   }
 }

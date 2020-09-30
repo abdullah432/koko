@@ -24,14 +24,15 @@ class AddStoryState extends State<AddStory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Constant.primiumThemeSelected
-          ? PremiumContainer(
-              child: mainBody(),
-            )
-          : NonPremiumContainer(
-              child: mainBody(),
-            ),
-    );
+        body: Constant.primiumThemeSelected
+            ? PremiumContainer(
+                child: mainBody(),
+                gradient: Constant.selectedGradient,
+              )
+            : NonPremiumContainer(
+                child: mainBody(),
+                color: Constant.selectedColor,
+              ));
   }
 
   Widget mainBody() {

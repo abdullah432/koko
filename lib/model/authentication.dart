@@ -127,11 +127,12 @@ class Auth implements BaseAuth {
 
   void createRecord(name, uid) async {
     db.collection("users").doc(uid).set({'name': name});
-    db.collection("users").doc(uid).collection("setting").doc('themesetting').set({
-      'primiumThemeSelected': false,
-      'selectedThemIndex': 0,
-      'unlockTheme': []
-    });
+    db
+        .collection("users")
+        .doc(uid)
+        .collection("setting")
+        .doc('themesetting')
+        .set({'unlockTheme': [false, false, false, false, false, false, false, false, false]});
   }
 
   @override

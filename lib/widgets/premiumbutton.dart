@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kuku/styles/gradientcolors.dart';
 import 'package:kuku/utils/constant.dart';
 
 class PremiumButton extends StatelessWidget {
@@ -19,7 +18,7 @@ class PremiumButton extends StatelessWidget {
             blurRadius: 20.0,
           ),
         ],
-        gradient: Constant.selectedButtonColor,
+        gradient: Constant.selectedButtonGradient,
       ),
       child: MaterialButton(
         highlightColor: Colors.transparent,
