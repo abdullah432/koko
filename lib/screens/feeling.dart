@@ -16,7 +16,7 @@ class FeelingPage extends StatefulWidget {
 class FeelingPageState extends State<FeelingPage> {
   final minimumPadding = 5.0;
   double rating = 2;
-  String feeling = 'COMPLETLY OK';
+  String feeling = 'COMPLETELY OK';
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +147,7 @@ class FeelingPageState extends State<FeelingPage> {
         break;
       case 2:
         path = 'images/completlyOk.png';
-        feeling = 'COMPLETLY OK';
+        feeling = 'COMPLETELY OK';
         break;
       case 3:
         path = 'images/happy emoji.png';

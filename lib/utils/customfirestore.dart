@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -139,14 +140,40 @@ class CustomFirestore {
   }
 
   Future loadUserSetting({@required uid}) async {
-    DocumentSnapshot documentSnapshot = await db
+    try {
+      DocumentSnapshot documentSnapshot = await db
+          .collection('users')
+          .doc(uid)
+          .collection('setting')
+          .doc('themesetting')
+          .get();
+
+      Constant.unlockTheme =
+          List<bool>.from(documentSnapshot.data()['unlockTheme']);
+      print('unlock Theme data loaded: ' + Constant.unlockTheme.toString());
+    } catch (error) {
+      print('version 1.0.2 user');
+      Constant.unlockTheme = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ];
+    }
+  }
+
+  updateThemeData() {
+    db
         .collection('users')
-        .doc(uid)
+        .doc(Constant.useruid)
         .collection('setting')
         .doc('themesetting')
-        .get();
-
-    Constant.unlockTheme = List<bool>.from(documentSnapshot.data()['unlockTheme']);
-    print('unlock Theme data loaded: ' + Constant.unlockTheme.toString());
+        .set({'unlockTheme': Constant.unlockTheme});
   }
 }

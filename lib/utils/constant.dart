@@ -7,7 +7,18 @@ class Constant {
   //setting loaded
   static bool settingLoaded = false;
 
-  static List<bool> unlockTheme = [];
+  static List<bool> unlockTheme = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
   static bool primiumThemeSelected;
   static Color selectedColor = color1;
   static Color gradientStartColor;
@@ -21,9 +32,21 @@ class Constant {
   static Color color5 = Color.fromRGBO(30, 32, 41, 1.0);
 
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
-  static List<LinearGradient> listOfPremium = [GradientColors.gradient1];
+  static List<LinearGradient> listOfPremium = [
+    GradientColors.gradient1,
+    GradientColors.gradient2,
+    GradientColors.gradient3,
+    GradientColors.gradient4,
+    GradientColors.gradient5,
+    GradientColors.gradient6,
+  ];
   static List<LinearGradient> listOfPremiumButtons = [
-    GradientColors.gradientbutton1
+    GradientColors.gradientbutton1,
+    GradientColors.gradientbutton2,
+    GradientColors.gradientbutton3,
+    GradientColors.gradientbutton4,
+    GradientColors.gradientbutton5,
+    GradientColors.gradientbutton6,
   ];
 
   //List of feeling
@@ -49,6 +72,9 @@ class Constant {
   //ads: videoAd = true means show video ad
   static bool videoAd = true;
   static bool facebooknative = true;
+
+  //load username and theme data once
+  static bool userDataLoaded = false;
 
   //functions
   static DateTime getActiveStoryDate(String value) {

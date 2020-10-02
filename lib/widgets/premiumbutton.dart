@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:kuku/utils/constant.dart';
 
 class PremiumButton extends StatelessWidget {
-  final GestureTapCallback onTap;
+  // final GestureTapCallback onTap;
+  final void Function(BuildContext) onTap;
   final String text;
   const PremiumButton({@required this.onTap, @required this.text});
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 190.0),
+      margin: EdgeInsets.only(top: text == 'LOGIN' ? 190.0 : 270.0),
       decoration: new BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: <BoxShadow>[
@@ -33,7 +34,7 @@ class PremiumButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () => onTap,
+        onPressed: () => this.onTap(context),
       ),
     );
   }

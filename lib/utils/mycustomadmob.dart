@@ -1,4 +1,3 @@
-import 'package:facebook_audience_network/ad/ad_interstitial.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 
 class MyCustomAdmob {
@@ -22,7 +21,7 @@ class MyCustomAdmob {
 
   InterstitialAd interstitialAdMob() {
     return InterstitialAd(
-      adUnitId: 'ca-app-pub-3940256099942544/1033173712',
+      adUnitId: 'ca-app-pub-5554760537482883/2900918983',
       // targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("InterstitialAd event is $event");
@@ -32,7 +31,7 @@ class MyCustomAdmob {
 
   InterstitialAd interstitialVideoAdMob() {
     return InterstitialAd(
-      adUnitId: 'ca-app-pub-3940256099942544/8691691433',
+      adUnitId: 'ca-app-pub-5554760537482883/2900918983',
       // targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("InterstitialAd event is $event");

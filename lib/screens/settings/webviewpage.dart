@@ -40,9 +40,11 @@ class _WebViewPageState extends State<WebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Constant.selectedColor,
-        title: const Text('Privacy Policy'),
-      ),
+          backgroundColor: Constant.primiumThemeSelected
+              ? Constant.gradientStartColor
+              : Constant.selectedColor,
+          title: Text('Privacy Policy'),
+        ),
       // We're using a Builder here so we have a context that is below the Scaffold
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {

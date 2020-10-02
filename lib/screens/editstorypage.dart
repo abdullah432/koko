@@ -38,7 +38,10 @@ class EditStoryPageState extends State<EditStoryPage> {
   void initState() {
     _selectedDate = DateTime.parse(story.date);
     _titleController.text = story.title;
-    _selectedFeeling = story.feeling;
+    if (story.feeling == 'COMPLETLY OK')
+      _selectedFeeling = 'COMPLETELY OK';
+    else
+      _selectedFeeling = story.feeling;
     _selectedReason = story.reason;
     _whatHappenedController.text = story.whatHappened;
     _dailyNotesController.text = story.note;

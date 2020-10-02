@@ -17,7 +17,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class SettingPageState extends State<SettingPage> {
-  List<String> listOfItems = ['Profile & Theme', 'Privacy Policy', 'Theme'];
+  List<String> listOfItems = ['Profile', 'Privacy Policy', 'Theme'];
 
   // String privacypolicyLink = 'https://drive.google.com/file/d/1uCOH6y_xsYamTwCOoLmoT_0lJ0XvDiZ1/view?usp=sharing';
   String facebookLink = '';

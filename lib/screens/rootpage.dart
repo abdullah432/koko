@@ -20,9 +20,6 @@ class RootPage extends StatelessWidget {
           final bool isLoggedIn = snapshot.hasData;
           String uid = snapshot.data;
           Constant.useruid = uid;
-          //now load user name and setting (one time per app use)
-          _customFirestore.loadUserName(userid: Constant.useruid);
-          _customFirestore.loadUserSetting(uid: Constant.useruid);
           return isLoggedIn ? HomePage() : LoginPage();
         }
 

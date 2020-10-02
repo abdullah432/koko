@@ -52,6 +52,13 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    //now load user name and setting (one time per app use)
+    if (!Constant.userDataLoaded) {
+      _customFirestore.loadUserName(userid: Constant.useruid);
+      _customFirestore.loadUserSetting(uid: Constant.useruid);
+      //update userDataLoaded value
+      Constant.userDataLoaded = true;
+    }
 
     pageController.addListener(() {
       int next = pageController.page.round();

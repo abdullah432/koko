@@ -8,13 +8,15 @@ class NonPremiumContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height >= 775.0
-          ? MediaQuery.of(context).size.height
-          : 775.0,
-      color: color,
-      child: child,
+    return SingleChildScrollView(
+          child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height >= 775.0
+            ? MediaQuery.of(context).size.height
+            : 775.0,
+        color: color,
+        child: child,
+      ),
     );
   }
 }

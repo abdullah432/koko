@@ -16,10 +16,10 @@ void main() async {
   
   //admob ads initialize
   FirebaseAdMob.instance
-      .initialize(appId: "ca-app-pub-3940256099942544~3347511713");
+      .initialize(appId: "ca-app-pub-5554760537482883~8172684706");
   //facebook ads
   FacebookAudienceNetwork.init(
-    testingId: "37b1da9d-b48c-4103-a393-2e095e734bd6", //optional
+    // testingId: "37b1da9d-b48c-4103-a393-2e095e734bd6", //optional
   );
 
   runApp(MyApp());

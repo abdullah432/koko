@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:kuku/utils/constant.dart';
 
 class NonPremiumButton extends StatelessWidget {
-  final GestureTapCallback onTap;
+  // final GestureTapCallback onTap;
+  final void Function(BuildContext) onTap;
   final String text;
   const NonPremiumButton({@required this.onTap, @required this.text, Key key})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(top: 190.0),
+      margin: EdgeInsets.only(top: text == 'LOGIN' ? 190.0 : 270.0),
       color: Constant.selectedColor,
       child: MaterialButton(
         highlightColor: Colors.transparent,
@@ -24,7 +25,7 @@ class NonPremiumButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () => onTap,
+        onPressed: () => this.onTap(context),
       ),
     );
   }

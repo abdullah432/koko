@@ -151,20 +151,11 @@ class SaveStoryState extends State {
   }
 
   void saveStory(BuildContext context) async {
-    // story = new Story(GlobalData.title, GlobalData.date, GlobalData.feeling,
-    //     GlobalData.reason, GlobalData.whatHappened, GlobalData.note);
-
-    // int result = await databaseHelper.insertStory(story);
-    // if (result != 0) {
-    //   // showSnackBar(context, 'Story is Successfully added');
-    //   Navigator.push(
-    //       context, MaterialPageRoute(builder: (context) => HomePage()));
-    // }
     //cicular progress bar
     startProgressAnimation();
 
     CustomFirestore _customFirestore = CustomFirestore();
-    String result = await _customFirestore.addStoryToFirestore(
+    _customFirestore.addStoryToFirestore(
       title: GlobalData.title,
       date: GlobalData.date,
       feeling: GlobalData.feeling,
@@ -173,20 +164,30 @@ class SaveStoryState extends State {
       note: GlobalData.note,
     );
 
-    if (result == 'success') {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    storyAdded: true,
-                  )),
-          (Route<dynamic> route) => false);
-    } else {
-      setState(() {
-        waiting = false;
-        showSnackBar(context, result);
-      });
-    }
+    waiting = false;
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage(
+                  storyAdded: true,
+                )),
+        (Route<dynamic> route) => false);
+
+    // if (result == 'success') {
+    //   Navigator.pushAndRemoveUntil(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => HomePage(
+    //                 storyAdded: true,
+    //               )),
+    //       (Route<dynamic> route) => false);
+    // } else {
+    //   setState(() {
+    //     waiting = false;
+    //     showSnackBar(context, result);
+    //   });
+    // }
   }
 
   void showSnackBar(context, msg) {

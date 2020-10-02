@@ -316,9 +316,9 @@ class _LoginPageState extends State<LoginPage>
               ),
               Constant.primiumThemeSelected
                   ? PremiumButton(
-                      text: 'LOGIN', onTap: () => loginButtonPressed())
+                      text: 'LOGIN', onTap: (context) => loginButtonPressed())
                   : NonPremiumButton(
-                      text: 'LOGIN', onTap: () => loginButtonPressed()),
+                      text: 'LOGIN', onTap: (context) => loginButtonPressed()),
             ],
           ),
           Padding(
@@ -479,46 +479,11 @@ class _LoginPageState extends State<LoginPage>
                   ),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: 270.0),
-                decoration: new BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: GradientColors.gradient1Start,
-                      offset: Offset(1.0, 6.0),
-                      blurRadius: 20.0,
-                    ),
-                    BoxShadow(
-                      color: GradientColors.gradient1End,
-                      offset: Offset(1.0, 6.0),
-                      blurRadius: 20.0,
-                    ),
-                  ],
-                  gradient: new LinearGradient(
-                      colors: [
-                        GradientColors.gradient1End,
-                        GradientColors.gradient1Start
-                      ],
-                      begin: const FractionalOffset(0.2, 0.2),
-                      end: const FractionalOffset(1.0, 1.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp),
-                ),
-                child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: const Color(0xFFf7418c),
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "SIGN UP",
-                        style: TextStyle(color: Colors.white, fontSize: 25.0),
-                      ),
-                    ),
-                    onPressed: () => singupButtonPressed()),
-              ),
+              Constant.primiumThemeSelected
+                  ? PremiumButton(
+                      text: 'SIGNUP', onTap: (context) => signupButtonPressed())
+                  : NonPremiumButton(
+                      text: 'SIGNUP', onTap: (context) => signupButtonPressed()),
             ],
           ),
           SizedBox(height: 30),
@@ -742,8 +707,10 @@ class _LoginPageState extends State<LoginPage>
 
   //login and signup through gmail and password
   loginButtonPressed() async {
+    print('loginbuttonpressed');
     if (_formKey.currentState.validate()) {
       try {
+        
         startSigninProgressbar();
         BaseAuth auth = new Auth();
         String uid = await auth.signIn(
@@ -771,7 +738,7 @@ class _LoginPageState extends State<LoginPage>
     }
   }
 
-  singupButtonPressed() async {
+  signupButtonPressed() async {
     if (_formKey.currentState.validate()) {
       try {
         startSignupProgressbar();

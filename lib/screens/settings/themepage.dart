@@ -1,6 +1,8 @@
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/utils/constant.dart';
+import 'package:kuku/utils/customfirestore.dart';
 import 'package:kuku/widgets/nonpremiumcontainer.dart';
 import 'package:kuku/widgets/premiumcontainer.dart';
 import 'package:kuku/styles/gradientcolors.dart';
@@ -30,6 +32,9 @@ class _ThemePageState extends State<ThemePage> {
   bool _newThemeUpdateInProgress = false;
   //Snackbar
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  //ad loading in progress
+  bool adLoadingInProgress = false;
+  bool adFailedToLoad = false;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +118,7 @@ class _ThemePageState extends State<ThemePage> {
     return GridView.builder(
       itemBuilder: circularNoPremiumTheme,
       itemCount: Constant.listOfColors.length,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 5.0,
@@ -126,6 +132,7 @@ class _ThemePageState extends State<ThemePage> {
     return GridView.builder(
       itemBuilder: circularPremiumTheme,
       itemCount: Constant.listOfPremium.length,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 5.0,
@@ -227,12 +234,20 @@ class _ThemePageState extends State<ThemePage> {
         //for appbar color
         Constant.gradientStartColor =
             GradientColors.listOfGradientStartColor[selectedThemIndex];
+        //update button color
+        Constant.selectedButtonGradient =
+            Constant.listOfPremiumButtons[selectedThemIndex];
+
+        //update local storage
+        updateLocalStorage();
 
         updateThemeSuccess();
       } else {
         //show rewarded ads
         setState(() {
           _newThemeUpdateInProgress = false;
+          adLoadingInProgress = false;
+          adFailedToLoad = false;
           _showMaterialDialog();
         });
       }
@@ -240,9 +255,7 @@ class _ThemePageState extends State<ThemePage> {
       //this mean new theme is updated and now on back button previous page should be updated
       _newThemeUpdated = true;
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setInt('selectedThemIndex', selectedThemIndex);
-      prefs.setBool('primiumThemeSelected', primiumThemeSelected);
+      updateLocalStorage();
       //
       if (primiumThemeSelected) {
       } else {
@@ -262,6 +275,12 @@ class _ThemePageState extends State<ThemePage> {
     });
   }
 
+  updateLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('selectedThemIndex', selectedThemIndex);
+    prefs.setBool('primiumThemeSelected', primiumThemeSelected);
+  }
+
   Future<bool> _onBackPressed() {
     if (_newThemeUpdated)
       Navigator.pop(context, true);
@@ -277,33 +296,100 @@ class _ThemePageState extends State<ThemePage> {
 
   _showMaterialDialog() {
     showDialog(
-      context: context,
-      builder: (_) => new AlertDialog(
-          title: Center(child: new Text("Unlock Theme")),
-          content: RaisedButton(
-            onPressed: () {
-              print('watch ad');
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                  title: Text("Unlock Theme"),
+                  content: RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        print('watch ad');
+                        adLoadingInProgress = true;
+                      });
+                      showRewardedVideoAd(context);
+                    },
+                    color: Colors.greenAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: adLoadingInProgress
+                          ? Text(
+                              adFailedToLoad
+                                  ? 'Ad Fail to Load'
+                                  : 'AD LOADING ...',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FlutterIcons.unlock_alt_faw5s),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'WATCH AD',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                )
+                              ],
+                            ),
+                    ),
+                  ));
             },
-            color: Colors.greenAccent,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0)),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(FlutterIcons.unlock_alt_faw5s),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'WATCH AD',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  )
-                ],
-              ),
-            ),
-          )),
+          );
+        });
+  }
+
+  showRewardedVideoAd(context) {
+    FacebookRewardedVideoAd.loadRewardedVideoAd(
+      placementId: "3663243730352300_3707040615972611",
+      listener: (result, value) {
+        if (result == RewardedVideoAdResult.LOADED)
+          FacebookRewardedVideoAd.showRewardedVideoAd();
+        if (result == RewardedVideoAdResult.VIDEO_COMPLETE) {
+          setState(() {
+            print("Video completed");
+            _newThemeUpdated = true;
+            Constant.selectedGradient =
+                Constant.listOfPremium[selectedThemIndex];
+            Constant.primiumThemeSelected = true;
+            //for appbar color
+            Constant.gradientStartColor =
+                GradientColors.listOfGradientStartColor[selectedThemIndex];
+            //update button color
+            Constant.selectedButtonGradient =
+                Constant.listOfPremiumButtons[selectedThemIndex];
+
+            //update local storage
+            updateLocalStorage();
+
+            Constant.unlockTheme[selectedThemIndex] = true;
+            CustomFirestore _customF = CustomFirestore();
+            _customF.updateThemeData();
+            updateLocalStorage();
+            //dispose dialog box
+            Navigator.pop(context);
+            //remove checkbox
+          });
+        }
+
+        if (result == RewardedVideoAdResult.ERROR) {
+          setState(() {
+            Navigator.pop(context);
+            //show success msg
+            showInSnackBar('Ad failed to laod. Please try again');
+          });
+        }
+
+        if (result == RewardedVideoAdResult.VIDEO_CLOSED) {
+          updateThemeSuccess();
+        }
+      },
     );
   }
 }
