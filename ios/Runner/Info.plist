@@ -49,5 +49,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>Image picker for uplaoding to firestore</string>
+<key>NSCameraUsageDescription</key>
+<string>Image picker for uplaoding to firestore</string>
+
 </dict>
 </plist>

@@ -1,10 +1,13 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:meta/meta.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class CustomFirestore {
   // User _user = new User();
@@ -39,13 +42,25 @@ class CustomFirestore {
     return listOfStory;
   }
 
+  Future<String> saveImageToFirestoreStorage(Asset asset) async {
+    ByteData byteData =
+        await asset.getByteData(); // requestOriginal is being deprecated
+    List<int> imageData = byteData.buffer.asUint8List();
+    StorageReference ref = FirebaseStorage().ref().child(
+        "${asset.name}"); // To be aligned with the latest firebase API(4.0)
+    StorageUploadTask uploadTask = ref.putData(imageData);
+    var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    return dowurl.toString();
+  }
+
   Future<String> addStoryToFirestore({
     @required String title,
     @required String date,
     @required String feeling,
     @required String reason,
     @required String whatHappened,
-    @required String note,
+    @required List<String> dowImagesList,
+    // @required String note,
   }) async {
     try {
       await db
@@ -60,7 +75,8 @@ class CustomFirestore {
         // 'reference': db.collection('users').doc(Constant.useruid),
         'reason': reason,
         'whatHappened': whatHappened,
-        'note': note,
+        'images': dowImagesList,
+        // 'note': note,
       }).whenComplete(() {
         return 'success';
       }).catchError((error) {

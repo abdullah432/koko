@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:date_format/date_format.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/screens/add_story.dart';
@@ -10,11 +8,9 @@ import 'package:kuku/screens/storydetail.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
 import 'package:flutter/material.dart';
-import 'package:kuku/utils/mycustomadmob.dart';
 import 'package:kuku/widgets/gradienticons.dart';
 import 'package:kuku/widgets/nonpremiumanimatedcontainer.dart';
 import 'package:kuku/widgets/premiumanimatedcontainer.dart';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:kuku/widgets/dropdownpopup.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,8 +42,6 @@ class HomePageState extends State<HomePage> {
 
   //when user reach to end then this will be true
   bool reachToEnd = false;
-  //admob
-  MyCustomAdmob myCustomAdmob = MyCustomAdmob();
 
   @override
   void initState() {
@@ -81,39 +75,9 @@ class HomePageState extends State<HomePage> {
 
     // //if homepage call from addstory page then move to last page
     if (storyAdded != null) {
-      if (Constant.videoAd) {
-        showInterstitialVideoAd();
-        Constant.videoAd = false;
-      } else {
-        showInterstitialAd();
-        Constant.videoAd = true;
-      }
 
       Timer(Duration(seconds: 1), () => moveToEndOfPage());
     }
-  }
-
-  showInterstitialAd() {
-    myCustomAdmob.interstitialAdMob()
-      ..load()
-      ..show();
-  }
-
-  showInterstitialVideoAd() {
-    myCustomAdmob.interstitialVideoAdMob()
-      ..load()
-      ..show();
-  }
-
-  showFacebookInterstitialAd() {
-    FacebookInterstitialAd.loadInterstitialAd(
-      placementId: "3663243730352300_3663613440315329",
-      listener: (result, value) {
-        if (result == InterstitialAdResult.LOADED)
-          FacebookInterstitialAd.showInterstitialAd(delay: 5000);
-        if (result == InterstitialAdResult.ERROR) showInterstitialVideoAd();
-      },
-    );
   }
 
   @override

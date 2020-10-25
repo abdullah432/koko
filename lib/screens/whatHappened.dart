@@ -1,6 +1,6 @@
 import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/widgets/PhotoHero.dart';
-import 'package:kuku/screens/note.dart';
+import 'package:kuku/screens/imagesview.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +163,7 @@ class WhatHappenedState extends State<WhatHappened> {
   }
 
   navigateToNoteScreen() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Note()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ImagesView()));
   }
 
   void moveToLastScreen() {

@@ -151,17 +151,31 @@ class SaveStoryState extends State {
   }
 
   void saveStory(BuildContext context) async {
+    List<String> listOfDownloadUrl = [];
     //cicular progress bar
     startProgressAnimation();
 
     CustomFirestore _customFirestore = CustomFirestore();
+    //first upload images to storage, if selected
+    if(GlobalData.images == null)
+      print('it null');
+    if (GlobalData.images != null) {
+      for (int i = 0; i < GlobalData.images.length; i++) {
+        String dowUrl = await _customFirestore
+            .saveImageToFirestoreStorage(GlobalData.images[i]);
+        print('dowUrl: '+dowUrl);
+        listOfDownloadUrl.add(dowUrl);
+      }
+    }
+
     _customFirestore.addStoryToFirestore(
       title: GlobalData.title,
       date: GlobalData.date,
       feeling: GlobalData.feeling,
       reason: GlobalData.reason,
       whatHappened: GlobalData.whatHappened,
-      note: GlobalData.note,
+      dowImagesList: listOfDownloadUrl
+      // note: GlobalData.note,
     );
 
     waiting = false;

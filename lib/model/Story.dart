@@ -47,15 +47,13 @@ class Story {
     this._note = note;
   }
 
-    //assert mean these fields are manditory, other can be null
   Story.fromMap(Map<String, dynamic> map, {this.reference})
-    :
-    _title = map['title'],
-    _date = map['date'],
-    _feeling = map['feeling'],
-    _reason = map['reason'],
-    _whatHappened = map['whatHappened'],
-    _note = map['note'];
+      : _title = map['title'],
+        _date = map['date'],
+        _feeling = map['feeling'],
+        _reason = map['reason'],
+        _whatHappened = map['whatHappened'],
+        _note = map['note'];
 
   Story.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);

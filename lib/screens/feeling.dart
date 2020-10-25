@@ -3,8 +3,6 @@ import 'package:kuku/widgets/PhotoHero.dart';
 import 'package:kuku/screens/reason.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:kuku/widgets/nonpremiumcontainer.dart';
-import 'package:kuku/widgets/premiumcontainer.dart';
 
 class FeelingPage extends StatefulWidget {
   @override
@@ -23,11 +21,11 @@ class FeelingPageState extends State<FeelingPage> {
     return Scaffold(
         body: SizedBox.expand(
             child: Constant.primiumThemeSelected
-                ? PremiumContainer(
+                ? FeelingPremiumContainer(
                     child: mainBody(),
                     gradient: Constant.selectedGradient,
                   )
-                : NonPremiumContainer(
+                : Feeling_NonPremiumContainer(
                     child: mainBody(),
                     color: Constant.selectedColor,
                   )));
@@ -170,5 +168,45 @@ class FeelingPageState extends State<FeelingPage> {
 
   void moveToLastScreen() {
     Navigator.pop(context);
+  }
+}
+
+//beacuse main container have singlechildscrollview
+//So there is slider issue
+class FeelingPremiumContainer extends StatelessWidget {
+  final child;
+  LinearGradient gradient;
+  FeelingPremiumContainer({@required this.child, @required this.gradient, Key key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height >= 775.0
+          ? MediaQuery.of(context).size.height
+          : 775.0,
+      decoration: BoxDecoration(gradient: gradient),
+      child: child,
+    );
+  }
+}
+
+class Feeling_NonPremiumContainer extends StatelessWidget {
+  final child;
+  Color color;
+  Feeling_NonPremiumContainer({@required this.child, @required this.color, Key key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height >= 775.0
+          ? MediaQuery.of(context).size.height
+          : 775.0,
+      color: color,
+      child: child,
+    );
   }
 }

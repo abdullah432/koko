@@ -483,7 +483,8 @@ class _LoginPageState extends State<LoginPage>
                   ? PremiumButton(
                       text: 'SIGNUP', onTap: (context) => signupButtonPressed())
                   : NonPremiumButton(
-                      text: 'SIGNUP', onTap: (context) => signupButtonPressed()),
+                      text: 'SIGNUP',
+                      onTap: (context) => signupButtonPressed()),
             ],
           ),
           SizedBox(height: 30),
@@ -658,12 +659,14 @@ class _LoginPageState extends State<LoginPage>
       else
         stopProgreessbarAndShowScafold(e.code);
     } catch (error) {
-      setState(() {
-        print(error.toString());
-        signinWaiting = false;
-        signupWaiting = false;
-        showInSnackBar(error.toString());
-      });
+      if (this.mounted) {
+        setState(() {
+          print(error.toString());
+          signinWaiting = false;
+          signupWaiting = false;
+          showInSnackBar(error.toString());
+        });
+      }
     }
   }
 
@@ -687,13 +690,15 @@ class _LoginPageState extends State<LoginPage>
       } else {
         signinWaiting = false;
         signupWaiting = false;
-        setState(() {
-          if (result == 'CONNECTION_FAILURE: CONNECTION_FAILURE') {
-            showInSnackBar('Check your internet connection');
-          } else {
-            showInSnackBar(result);
-          }
-        });
+        if (this.mounted) {
+          setState(() {
+            if (result == 'CONNECTION_FAILURE: CONNECTION_FAILURE') {
+              showInSnackBar('Check your internet connection');
+            } else {
+              showInSnackBar(result);
+            }
+          });
+        }
       }
     } catch (error) {
       setState(() {
@@ -710,7 +715,6 @@ class _LoginPageState extends State<LoginPage>
     print('loginbuttonpressed');
     if (_formKey.currentState.validate()) {
       try {
-        
         startSigninProgressbar();
         BaseAuth auth = new Auth();
         String uid = await auth.signIn(
@@ -756,9 +760,11 @@ class _LoginPageState extends State<LoginPage>
           stopProgreessbarAndShowScafold(
               'Password should be at least 6 characters');
         }
-        setState(() {
-          signupWaiting = false;
-        });
+        if (this.mounted) {
+          setState(() {
+            signupWaiting = false;
+          });
+        }
       }
     }
   }
