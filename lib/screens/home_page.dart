@@ -8,6 +8,7 @@ import 'package:kuku/screens/storydetail.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
 import 'package:flutter/material.dart';
+import 'package:kuku/widgets/facebookNativeInterstitialAd.dart';
 import 'package:kuku/widgets/gradienticons.dart';
 import 'package:kuku/widgets/nonpremiumanimatedcontainer.dart';
 import 'package:kuku/widgets/premiumanimatedcontainer.dart';
@@ -75,7 +76,6 @@ class HomePageState extends State<HomePage> {
 
     // //if homepage call from addstory page then move to last page
     if (storyAdded != null) {
-
       Timer(Duration(seconds: 1), () => moveToEndOfPage());
     }
   }
@@ -102,13 +102,21 @@ class HomePageState extends State<HomePage> {
                   // debugPrint(currentPage.toString());
                   bool active = currentIndex == currentPage;
                   return addNotePage(active);
-                } else if (storyList.length + 1 >= currentIndex) {
+                } else if (currentIndex == 5) {
+                  bool active = currentIndex == currentPage;
+                  print("count: "+count.toString());
+                  print("currentindex: "+currentIndex.toString());
+                  return nativeStoryAd(active);
+                }
+                 else if (storyList.length + 1 >= currentIndex) {
                   // debugPrint('StoryList Length' + storyList.length.toString());
                   // debugPrint('currentIndex 1:' + currentIndex.toString());
                   bool active = currentIndex == currentPage;
                   // debugPrint('currentIndex 2:' + currentIndex.toString());
                   return storyPages(
-                      storyList[currentIndex - 2], active, currentIndex);
+                      storyList[currentIndex - 2],
+                      active,
+                      currentIndex);
                 }
               }),
           //setting button
@@ -270,6 +278,17 @@ class HomePageState extends State<HomePage> {
         ));
   }
 
+  Widget nativeStoryAd(bool active) {
+    height = active ? 380 : 350;
+    width = active ? 300 : 250;
+    return Center(
+        child: FacebookNativeInterstialAd(
+      height: height,
+      width: width,
+      color: Constant.selectedColor,
+    ));
+  }
+
   Widget addNotePage(bool active) {
     // final double h = active ? 390 : 370;
     // final double w = active ? 300 : 240;
@@ -418,7 +437,7 @@ class HomePageState extends State<HomePage> {
       if (this.mounted) {
         setState(() {
           print('index to be updated: ' + currentIndex.toString());
-          storyList[currentIndex - 2] = returnStory;
+          storyList[ currentIndex - 2] = returnStory;
           print('story is edited on detail page');
         });
       }

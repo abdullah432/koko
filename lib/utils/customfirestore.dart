@@ -44,7 +44,7 @@ class CustomFirestore {
 
   Future<String> saveImageToFirestoreStorage(Asset asset) async {
     ByteData byteData =
-        await asset.getByteData(); // requestOriginal is being deprecated
+        await asset.getByteData(quality: 30); // requestOriginal is being deprecated
     List<int> imageData = byteData.buffer.asUint8List();
     StorageReference ref = FirebaseStorage().ref().child(
         "${asset.name}"); // To be aligned with the latest firebase API(4.0)

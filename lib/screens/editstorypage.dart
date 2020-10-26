@@ -34,6 +34,8 @@ class EditStoryPageState extends State<EditStoryPage> {
   //Snackbar
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  bool noteVisible = false;
+
   @override
   void initState() {
     _selectedDate = DateTime.parse(story.date);
@@ -45,6 +47,7 @@ class EditStoryPageState extends State<EditStoryPage> {
     _selectedReason = story.reason;
     _whatHappenedController.text = story.whatHappened;
     _dailyNotesController.text = story.note;
+    if (story.note != null) noteVisible = true;
     super.initState();
 
     _loadInterstitialAd();
@@ -234,27 +237,34 @@ class EditStoryPageState extends State<EditStoryPage> {
                   //space
                   SizedBox(height: 20.0),
                   //heading 4
-                  Text(
-                    'YOUR DAILY NOTES',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Raleway',
-                        fontSize: 19.0),
-                  ),
+                  Visibility(
+                      visible: noteVisible,
+                      child: Text(
+                        'YOUR DAILY NOTES',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Raleway',
+                            fontSize: 19.0),
+                      )),
                   //space
-                  SizedBox(height: 10.0),
-                  Container(
-                    color: Colors.white,
-                    child: TextField(
-                        controller: _dailyNotesController,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(8.0),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        )),
+                  Visibility(
+                    visible: noteVisible,
+                    child: SizedBox(height: 10.0),
                   ),
+                  Visibility(
+                      visible: noteVisible,
+                      child: Container(
+                        color: Colors.white,
+                        child: TextField(
+                            controller: _dailyNotesController,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(8.0),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                            )),
+                      )),
                   //space
                   SizedBox(height: 15.0),
                   Center(
@@ -266,6 +276,7 @@ class EditStoryPageState extends State<EditStoryPage> {
                             _selectedFeeling,
                             _selectedReason,
                             _whatHappenedController.text,
+                            [],
                             _dailyNotesController.text);
                         String result = await _customFirestore
                             .updateStoryToFirestore(story: story);

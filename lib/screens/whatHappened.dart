@@ -1,6 +1,6 @@
 import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/widgets/PhotoHero.dart';
-import 'package:kuku/screens/imagesview.dart';
+import 'package:kuku/screens/uploadimagesview.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,10 +1,12 @@
 import 'package:kuku/screens/editstorypage.dart';
+import 'package:kuku/screens/imageview.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:date_format/date_format.dart';
 import 'package:facebook_audience_network/ad/ad_native.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:kuku/widgets/listofuserphotos.dart';
 
 class StoryDetail extends StatefulWidget {
   final Story story;
@@ -55,6 +57,7 @@ class StoryDetailState extends State<StoryDetail> {
                 return SingleChildScrollView(
                   controller: controller,
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
@@ -157,24 +160,47 @@ class StoryDetailState extends State<StoryDetail> {
                               //space
                               SizedBox(height: 20.0),
                               //heading 4
-                              Text(
-                                'YOUR DAILY NOTES',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19.0),
-                              ),
+                              story.note != null
+                                  ? Text(
+                                      'YOUR DAILY NOTES',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Raleway',
+                                          fontSize: 19.0),
+                                    )
+                                  : Container(height: 0.0),
                               //space
                               SizedBox(height: 10.0),
-                              Text(
-                                story.note != ''
-                                    ? story.note
-                                    : 'You choose to not record it',
-                                style: TextStyle(
-                                    // color: Colors.white,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19),
-                              ),
+                              story.note != null
+                                  ? Text(
+                                      story.note != ''
+                                          ? story.note
+                                          : 'You choose to not record it',
+                                      style: TextStyle(
+                                          // color: Colors.white,
+                                          fontFamily: 'Raleway',
+                                          fontSize: 19),
+                                    )
+                                  : Container(height: 0.0),
+                              //Photos
+                              story.images != null && story.images.length != 0
+                                  ? Text(
+                                      'YOUR PHOTOS',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Raleway',
+                                          fontSize: 19.0),
+                                    )
+                                  : Container(height: 0.0),
+                              story.images != null && story.images.length != 0
+                                  ? ListOfUserPhotos(
+                                      images: story.images,
+                                      onTap: (index) {
+                                        navigateToPhotoView(
+                                            story.images, index);
+                                      },
+                                    )
+                                  : Container(height: 0.0),
                             ],
                           ),
                         ),
@@ -231,6 +257,20 @@ class StoryDetailState extends State<StoryDetail> {
         editDone = true;
       });
     }
+  }
+
+  navigateToPhotoView(images, index) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyPhotoView(
+                  galleryItems: images,
+                  backgroundDecoration: const BoxDecoration(
+                    color: Colors.black,
+                  ),
+                  initialIndex: index,
+                  scrollDirection: Axis.horizontal,
+                )));
   }
 
   Future<bool> _onBackPressed() {
