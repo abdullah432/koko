@@ -42,15 +42,15 @@ class CustomFirestore {
     return listOfStory;
   }
 
-  Future<String> saveImageToFirestoreStorage(Asset asset) async {
-    ByteData byteData =
-        await asset.getByteData(quality: 30); // requestOriginal is being deprecated
+  Future<List<String>> saveImageToFirestoreStorage(Asset asset) async {
+    ByteData byteData = await asset.getByteData(
+        quality: 30); // requestOriginal is being deprecated
     List<int> imageData = byteData.buffer.asUint8List();
     StorageReference ref = FirebaseStorage().ref().child(
         "${asset.name}"); // To be aligned with the latest firebase API(4.0)
     StorageUploadTask uploadTask = ref.putData(imageData);
     var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
-    return dowurl.toString();
+    return [dowurl.toString(), byteData.lengthInBytes.toString()];
   }
 
   Future<String> addStoryToFirestore({
@@ -60,6 +60,7 @@ class CustomFirestore {
     @required String reason,
     @required String whatHappened,
     @required List<String> dowImagesList,
+    @required int imagesSize,
     // @required String note,
   }) async {
     try {
@@ -76,6 +77,7 @@ class CustomFirestore {
         'reason': reason,
         'whatHappened': whatHappened,
         'images': dowImagesList,
+        'imagesSize': imagesSize,
         // 'note': note,
       }).whenComplete(() {
         return 'success';
@@ -121,7 +123,7 @@ class CustomFirestore {
     return 'success';
   }
 
-  Future<bool> deleteStory(date) async {
+  Future<bool> deleteStory(date, images) async {
     try {
       await db
           .collection("users")
@@ -130,6 +132,12 @@ class CustomFirestore {
           .doc(date)
           .delete()
           .whenComplete(() {
+        //delete images if exists
+        if (images != null && images.length > 0) {
+          print('images exists');
+          deleteUserImagesFromFirebaseStorage(images);
+        }
+
         return true;
       }).timeout(Duration(seconds: 10), onTimeout: () {
         // handle transaction timeout here
@@ -142,6 +150,19 @@ class CustomFirestore {
       return false;
     }
     return true;
+  }
+
+  deleteUserImagesFromFirebaseStorage(images) async {
+    try {
+      for (String image in images) {
+        print('Image link: ' + image);
+        StorageReference ref =
+            await FirebaseStorage().getReferenceFromUrl(image);
+        ref.delete();
+      }
+    } catch (error) {
+      print('deleteUserImagesFromFirebaseStorage: ' + error.toString());
+    }
   }
 
   void updateUserName(name) {

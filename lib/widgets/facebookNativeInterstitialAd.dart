@@ -1,6 +1,5 @@
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/material.dart';
-import 'package:kuku/utils/constant.dart';
 
 class FacebookNativeInterstialAd extends StatelessWidget {
   double height;

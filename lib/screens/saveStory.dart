@@ -152,6 +152,7 @@ class SaveStoryState extends State {
 
   void saveStory(BuildContext context) async {
     List<String> listOfDownloadUrl = [];
+    int imagesSize = 0;
     //cicular progress bar
     startProgressAnimation();
 
@@ -161,10 +162,11 @@ class SaveStoryState extends State {
       print('it null');
     if (GlobalData.images != null) {
       for (int i = 0; i < GlobalData.images.length; i++) {
-        String dowUrl = await _customFirestore
+        var dowUrl_Size = await _customFirestore
             .saveImageToFirestoreStorage(GlobalData.images[i]);
-        print('dowUrl: '+dowUrl);
-        listOfDownloadUrl.add(dowUrl);
+        print('dowUrl: '+dowUrl_Size.toString());
+        imagesSize += int.parse(dowUrl_Size[1]);
+        listOfDownloadUrl.add(dowUrl_Size[0]);
       }
     }
 
@@ -174,7 +176,8 @@ class SaveStoryState extends State {
       feeling: GlobalData.feeling,
       reason: GlobalData.reason,
       whatHappened: GlobalData.whatHappened,
-      dowImagesList: listOfDownloadUrl
+      dowImagesList: listOfDownloadUrl,
+      imagesSize: imagesSize
       // note: GlobalData.note,
     );
 
