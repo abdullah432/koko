@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_format/date_format.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
+import 'package:kuku/widgets/iconshadow.dart';
 
 class EditStoryPage extends StatefulWidget {
   final Story story;
@@ -33,8 +36,12 @@ class EditStoryPageState extends State<EditStoryPage> {
   CustomFirestore _customFirestore = CustomFirestore();
   //Snackbar
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  //if user of previous version then we may need to display note data
   bool noteVisible = false;
+  //this will help us to delete or update or do nothing during update
+  List<String> deleteImages = [];
+  //#TODO:
+  // List<Asset> newImages = [];
 
   @override
   void initState() {
@@ -48,6 +55,7 @@ class EditStoryPageState extends State<EditStoryPage> {
     _whatHappenedController.text = story.whatHappened;
     _dailyNotesController.text = story.note;
     if (story.note != null) noteVisible = true;
+
     super.initState();
 
     _loadInterstitialAd();
@@ -265,27 +273,101 @@ class EditStoryPageState extends State<EditStoryPage> {
                               ),
                             )),
                       )),
+                  //images space
+                  Visibility(
+                    visible: story.images != null && story.images.length != 0,
+                    child: SizedBox(height: 10.0),
+                  ),
+                  Visibility(
+                      visible: story.images != null && story.images.length != 0,
+                      child: Text(
+                        'Photos',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Raleway',
+                            fontSize: 19.0),
+                      )),
+                  Visibility(
+                    visible: story.images != null && story.images.length != 0,
+                    child: SizedBox(height: 10.0),
+                  ),
+                  //images
+                  story.images != null && story.images.length != 0
+                      ? GridView.count(
+                          // Create a grid with 2 columns. If you change the scrollDirection to
+                          // horizontal, this produces 2 rows.
+                          crossAxisCount: 3,
+                          // Generate 100 widgets that display their index in the List.
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: List.generate(story.images.length, (index) {
+                            return Stack(children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: story.images[index],
+                                      placeholder: (context, url) =>
+                                          CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      height: 120,
+                                      width: 120,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 0.0,
+                                top: 0.0,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        deleteImages.add(story.images[index]);
+                                        story.images.removeAt(index);
+                                      });
+                                    },
+                                    child: IconShadow(
+                                      icon: FlutterIcons.cross_ent,
+                                    )),
+                              )
+                            ]);
+                          }),
+                        )
+                      : Container(
+                          height: 0,
+                        ),
                   //space
                   SizedBox(height: 15.0),
                   Center(
                     child: RaisedButton(
                       onPressed: () async {
-                        Story story = Story(
+                        //before updating first check any changes in images
+                        if (deleteImages.length > 0) {
+                          //delete image from storage first
+                          _customFirestore.deleteUserImagesFromFirebaseStorage(
+                            deleteImages,
+                          );
+                        }
+                        Story updatedStory = Story(
                             _titleController.text,
                             _selectedDate.toString(),
                             _selectedFeeling,
                             _selectedReason,
                             _whatHappenedController.text,
-                            [],
+                            story.images,
                             _dailyNotesController.text);
                         String result = await _customFirestore
-                            .updateStoryToFirestore(story: story);
+                            .updateStoryToFirestore(story: updatedStory);
 
                         if (result != 'success')
                           showInSnackBar(result);
                         else {
                           _showInterstitialAd();
-                          Navigator.pop(context, story);
+                          Navigator.pop(context, updatedStory);
                         }
                       },
                       color: Colors.white,

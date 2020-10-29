@@ -107,7 +107,7 @@ class CustomFirestore {
         'feeling': story.feeling,
         'reason': story.reason,
         'whatHappened': story.whatHappened,
-        'note': story.note,
+        'images': story.images
       }).whenComplete(() {
         return 'success';
       }).catchError((error) {
@@ -158,8 +158,19 @@ class CustomFirestore {
         print('Image link: ' + image);
         StorageReference ref =
             await FirebaseStorage().getReferenceFromUrl(image);
+        print("storage length: "+ref.path.length.toString());
         ref.delete();
       }
+    } catch (error) {
+      print('deleteUserImagesFromFirebaseStorage: ' + error.toString());
+    }
+  }
+
+  deleteSingleImageFromStorage({@required imageURL}) async{
+    try {
+        StorageReference ref =
+            await FirebaseStorage().getReferenceFromUrl(imageURL);
+        ref.delete();
     } catch (error) {
       print('deleteUserImagesFromFirebaseStorage: ' + error.toString());
     }

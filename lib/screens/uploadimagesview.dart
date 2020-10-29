@@ -80,7 +80,7 @@ class ImagesViewState extends State<ImagesView> {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  'Would you like to add some images?',
+                  'Would you like to add some images 📷 ?',
                   style: TextStyle(color: Colors.white, fontSize: 22.0),
                 ),
               )),
@@ -94,13 +94,13 @@ class ImagesViewState extends State<ImagesView> {
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: EdgeInsets.only(
-                      left: minimumPadding * 8,
-                      right: minimumPadding * 8,
+                      left: minimumPadding * 7,
+                      right: minimumPadding * 7,
                       top: minimumPadding * 3,
                       bottom: minimumPadding * 3,
                     ),
                     child: Text(
-                      'Yes',
+                      'Upload',
                       style: TextStyle(
                           color: Constant.color5,
                           fontWeight: FontWeight.bold,
@@ -128,14 +128,21 @@ class ImagesViewState extends State<ImagesView> {
                       if (images != null) {
                         GlobalData.images = images;
                       }
-                        
+
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => SaveStory()));
                     }),
               )),
           Visibility(
             visible: imagesViewVisibility,
-            child: ImagesGridView(images: images,),
+            child: ImagesGridView(
+              images: images,
+              onRemove: (index) {
+                setState(() {
+                  images.removeAt(index);
+                });
+              },
+            ),
             // GridView.count(
             //   // Create a grid with 2 columns. If you change the scrollDirection to
             //   // horizontal, this produces 2 rows.
