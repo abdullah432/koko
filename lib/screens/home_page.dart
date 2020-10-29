@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'package:date_format/date_format.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/screens/add_story.dart';
 import 'package:kuku/screens/settings/settingpage.dart';
 import 'package:kuku/screens/storydetail.dart';
+import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +36,6 @@ class HomePageState extends State<HomePage> {
   int currentPage = 0;
   int count = 0;
   CustomFirestore _customFirestore = CustomFirestore();
-  List<Story> storyList;
 
   double height;
   double width;
@@ -44,7 +47,7 @@ class HomePageState extends State<HomePage> {
   //when user reach to end then this will be true
   bool reachToEnd = false;
   //facebook ad widget
-  Widget facebookNativeAd;
+  bool facebookNativeAdLoaded = false;
 
   @override
   void initState() {
@@ -78,23 +81,18 @@ class HomePageState extends State<HomePage> {
 
     // //if homepage call from addstory page then move to last page
     if (storyAdded != null) {
-      Timer(Duration(seconds: 1), () => moveToEndOfPage());
+      Timer(Duration(seconds: 1), () => moveToEndOfPage(count + 1));
     }
-
-    //load native facebook ad
-    facebookNativeAd = FacebookNativeInterstialAd(
-      height: 350,
-      width: 250,
-      color: Constant.selectedColor,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (storyList == null) {
-      storyList = new List<Story>();
+    if (GlobalData.storyList == null) {
+      GlobalData.storyList = new List<Story>();
       updateStoryList();
     }
+    //after calling page, count will be zero so
+    count = GlobalData.storyList.length;
 
     return Scaffold(
         key: _scaffoldKey,
@@ -103,7 +101,7 @@ class HomePageState extends State<HomePage> {
           PageView.builder(
               scrollDirection: Axis.horizontal,
               controller: pageController,
-              itemCount: count + 2,
+              itemCount: count >= 3 ? count + 3 : count + 2,
               itemBuilder: (BuildContext context, int currentIndex) {
                 if (currentIndex == 0) {
                   return introductryPage();
@@ -111,18 +109,18 @@ class HomePageState extends State<HomePage> {
                   // debugPrint(currentPage.toString());
                   bool active = currentIndex == currentPage;
                   return addNotePage(active);
-                } else if (currentIndex == 5) {
+                } else if (GlobalData.storyList.length + 2 == currentIndex) {
                   bool active = currentIndex == currentPage;
-                  print("count: " + count.toString());
-                  print("currentindex: " + currentIndex.toString());
+                  // print("count: " + count.toString());
+                  // print("currentindex: " + currentIndex.toString());
                   return nativeStoryAd(active);
-                } else if (storyList.length + 1 >= currentIndex) {
+                } else if (GlobalData.storyList.length + 1 >= currentIndex) {
                   // debugPrint('StoryList Length' + storyList.length.toString());
                   // debugPrint('currentIndex 1:' + currentIndex.toString());
                   bool active = currentIndex == currentPage;
                   // debugPrint('currentIndex 2:' + currentIndex.toString());
                   return storyPages(
-                    storyList[currentIndex - 2],
+                    GlobalData.storyList[currentIndex - 2],
                     active,
                     currentIndex,
                   );
@@ -138,7 +136,7 @@ class HomePageState extends State<HomePage> {
                 },
                 child: CustomDropDownPopup(),
               )),
-          //setting button
+          //backward/forward button
           Positioned(
             bottom: 35.0,
             right: 12.0,
@@ -147,7 +145,7 @@ class HomePageState extends State<HomePage> {
                 // print(pageController.page.toString());
                 setState(() {
                   if (!reachToEnd) {
-                    moveToEndOfPage();
+                    moveToEndOfPage(count + 2);
                     reachToEnd = true;
                   } else {
                     moveToFirstPage();
@@ -288,15 +286,22 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget nativeStoryAd(bool active) {
-    height = active ? 380 : 350;
-    width = active ? 300 : 250;
+    // height = active ? 380 : 350;
+    // width = active ? 300 : 250;
     return Center(
-      child: facebookNativeAd,
-      // FacebookNativeInterstialAd(
-      //   height: height,
-      //   width: width,
-      //   color: Constant.selectedColor,
-      // ),
+      child:
+          // Visibility(maintainState: true ,visible: facebookNativeAdLoaded, child: facebookNativeInterstitialAd())
+          Stack(children: [
+        Visibility(
+            maintainState: true,
+            visible: facebookNativeAdLoaded,
+            child: facebookNativeInterstitialAd()),
+        Positioned(
+          child: !facebookNativeAdLoaded
+              ? SpinKitRotatingPlain(color: Constant.selectedColor)
+              : Container(height: 0, width: 0),
+        )
+      ]),
     );
   }
 
@@ -369,7 +374,7 @@ class HomePageState extends State<HomePage> {
         await _customFirestore.deleteStory(story.date, story.images);
     if (response == true) {
       setState(() {
-        storyList.remove(story);
+        GlobalData.storyList.remove(story);
       });
     } else {
       showSnackBar('Failed to delete');
@@ -382,10 +387,10 @@ class HomePageState extends State<HomePage> {
   }
 
   void updateStoryList() async {
-    this.storyList = await _customFirestore.loadStoriesData();
+    GlobalData.storyList = await _customFirestore.loadStoriesData();
     if (this.mounted) {
       setState(() {
-        this.count = storyList.length;
+        this.count = GlobalData.storyList.length;
       });
     }
   }
@@ -417,20 +422,22 @@ class HomePageState extends State<HomePage> {
   }
 
   //methods
-  void moveToEndOfPage() {
-    pageController.animateToPage(
-      count + 1,
-      curve: Curves.easeIn,
-      duration: Duration(milliseconds: 700),
-    );
+  void moveToEndOfPage(index) {
+    // pageController.animateToPage(
+    //   count + 2,
+    //   curve: Curves.easeIn,
+    //   duration: Duration(milliseconds: 700),
+    // );
+    pageController.jumpToPage(index);
   }
 
   void moveToFirstPage() {
-    pageController.animateToPage(
-      0,
-      curve: Curves.easeIn,
-      duration: Duration(milliseconds: 700),
-    );
+    // pageController.animateToPage(
+    //   0,
+    //   curve: Curves.easeIn,
+    //   duration: Duration(milliseconds: 700),
+    // );
+    pageController.jumpToPage(0);
   }
 
   navigateToStoryDetailPage(story, currentIndex) async {
@@ -449,12 +456,46 @@ class HomePageState extends State<HomePage> {
       if (this.mounted) {
         setState(() {
           print('index to be updated: ' + currentIndex.toString());
-          storyList[currentIndex - 2] = returnStory;
+          GlobalData.storyList[currentIndex - 2] = returnStory;
           print('story is edited on detail page');
         });
       }
     } else {
       print('No editing on detail page');
     }
+  }
+
+  //facebook native ad
+  Widget facebookNativeInterstitialAd() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: FacebookNativeAd(
+        placementId: "3663243730352300_3663359137007426",
+        adType: NativeAdType.NATIVE_AD,
+        width: 250,
+        height: 350,
+        backgroundColor: Constant.selectedColor,
+        titleColor: Colors.white,
+        descriptionColor: Colors.white,
+        buttonColor: Constant.selectedColor,
+        buttonTitleColor: Colors.white,
+        buttonBorderColor: Colors.white,
+        keepAlive:
+            true, //set true if you do not want adview to refresh on widget rebuild
+        keepExpandedWhileLoading:
+            false, // set false if you want to collapse the native ad view when the ad is loading
+        expandAnimationDuraion:
+            300, //in milliseconds. Expands the adview with animation when ad is loaded
+        listener: (result, value) {
+          print("Native Ad: $result --> $value");
+          if (result == NativeAdResult.LOADED) {
+            setState(() {
+              print('Ad loaded');
+              facebookNativeAdLoaded = true;
+            });
+          }
+        },
+      ),
+    );
   }
 }

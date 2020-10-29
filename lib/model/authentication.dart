@@ -132,7 +132,19 @@ class Auth implements BaseAuth {
         .doc(uid)
         .collection("setting")
         .doc('themesetting')
-        .set({'unlockTheme': [false, false, false, false, false, false, false, false, false]});
+        .set({
+      'unlockTheme': [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    });
   }
 
   @override

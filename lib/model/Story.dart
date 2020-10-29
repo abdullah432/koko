@@ -13,10 +13,10 @@ class Story {
 
   Story(
       this._title, this._date, this._feeling, this._reason, this._whatHappened,
-      [this._images, this._note]);
+      [this._images, this._imagesSize, this._note]);
   Story.withID(
       this._title, this._date, this._feeling, this._reason, this._whatHappened,
-      [this._images, this._note]);
+      [this._images, this._imagesSize, this._note]);
 
   String get title => this._title;
   String get date => this._date;

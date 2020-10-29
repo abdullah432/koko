@@ -5,10 +5,8 @@ import 'package:kuku/screens/login_signup_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kuku/utils/constant.dart';
-import 'package:kuku/utils/customfirestore.dart';
 
 class RootPage extends StatelessWidget {
-  CustomFirestore _customFirestore = CustomFirestore();
   @override
   Widget build(BuildContext context) {
     final BaseAuth auth = AuthProvider.of(context).auth;
@@ -20,10 +18,11 @@ class RootPage extends StatelessWidget {
           final bool isLoggedIn = snapshot.hasData;
           String uid = snapshot.data;
           Constant.useruid = uid;
+
           return isLoggedIn ? HomePage() : LoginPage();
         }
 
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -32,7 +31,6 @@ class RootPage extends StatelessWidget {
 class WaitingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    print('Waiting to load ....');
     return Container(
       color: Constant.selectedColor,
       child: Center(

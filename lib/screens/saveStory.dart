@@ -158,28 +158,32 @@ class SaveStoryState extends State {
 
     CustomFirestore _customFirestore = CustomFirestore();
     //first upload images to storage, if selected
-    if(GlobalData.images == null)
-      print('it null');
+    if (GlobalData.images == null) print('it null');
     if (GlobalData.images != null) {
       for (int i = 0; i < GlobalData.images.length; i++) {
         var dowUrl_Size = await _customFirestore
             .saveImageToFirestoreStorage(GlobalData.images[i]);
-        print('dowUrl: '+dowUrl_Size.toString());
+        print('dowUrl: ' + dowUrl_Size.toString());
         imagesSize += int.parse(dowUrl_Size[1]);
         listOfDownloadUrl.add(dowUrl_Size[0]);
       }
     }
 
     _customFirestore.addStoryToFirestore(
-      title: GlobalData.title,
-      date: GlobalData.date,
-      feeling: GlobalData.feeling,
-      reason: GlobalData.reason,
-      whatHappened: GlobalData.whatHappened,
-      dowImagesList: listOfDownloadUrl,
-      imagesSize: imagesSize
-      // note: GlobalData.note,
-    );
+        title: GlobalData.title,
+        date: GlobalData.date,
+        feeling: GlobalData.feeling,
+        reason: GlobalData.reason,
+        whatHappened: GlobalData.whatHappened,
+        dowImagesList: listOfDownloadUrl,
+        imagesSize: imagesSize
+        // note: GlobalData.note,
+        );
+
+    //now add story to GlobalData.storylist
+    Story story = Story(GlobalData.title, GlobalData.date, GlobalData.feeling,
+        GlobalData.reason, GlobalData.whatHappened, listOfDownloadUrl, imagesSize);
+    GlobalData.storyList.add(story);
 
     waiting = false;
 

@@ -345,21 +345,26 @@ class EditStoryPageState extends State<EditStoryPage> {
                   Center(
                     child: RaisedButton(
                       onPressed: () async {
+                        int deleteImagesSize;
                         //before updating first check any changes in images
                         if (deleteImages.length > 0) {
                           //delete image from storage first
-                          _customFirestore.deleteUserImagesFromFirebaseStorage(
+                          deleteImagesSize = await _customFirestore.deleteUserImagesFromFirebaseStorage(
                             deleteImages,
                           );
                         }
                         Story updatedStory = Story(
-                            _titleController.text,
-                            _selectedDate.toString(),
-                            _selectedFeeling,
-                            _selectedReason,
-                            _whatHappenedController.text,
-                            story.images,
-                            _dailyNotesController.text);
+                          _titleController.text,
+                          _selectedDate.toString(),
+                          _selectedFeeling,
+                          _selectedReason,
+                          _whatHappenedController.text,
+                          story.images,
+                          story.imagesSize - deleteImagesSize,
+                          story.note != null
+                              ? _dailyNotesController.text
+                              : null,
+                        );
                         String result = await _customFirestore
                             .updateStoryToFirestore(story: updatedStory);
 

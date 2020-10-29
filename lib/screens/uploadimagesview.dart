@@ -100,11 +100,12 @@ class ImagesViewState extends State<ImagesView> {
                       bottom: minimumPadding * 3,
                     ),
                     child: Text(
-                      'Upload',
+                      'Pick Image',
                       style: TextStyle(
-                          color: Constant.color5,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
+                        color: Constant.color5,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                   onPressed: () {

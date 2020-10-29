@@ -6,9 +6,11 @@ class FacebookNativeInterstialAd extends StatelessWidget {
   double width;
   Color color;
   FacebookNativeInterstialAd(
-      {@required this.height, @required this.width, @required this.color, Key key})
+      {@required this.height,
+      @required this.width,
+      @required this.color,
+      Key key})
       : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
