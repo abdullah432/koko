@@ -4,8 +4,9 @@ import 'package:kuku/utils/constant.dart';
 class PremiumAnimatedContainer extends StatelessWidget {
   final height;
   final width;
+  final child;
   const PremiumAnimatedContainer(
-      {@required this.height, @required this.width, Key key})
+      {@required this.height, @required this.width, @required this.child, Key key,})
       : super(key: key);
 
   @override
@@ -19,21 +20,7 @@ class PremiumAnimatedContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         gradient: Constant.selectedGradient,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.add, color: Colors.white, size: 80),
-          Container(
-            height: 15,
-          ),
-          Text(
-            "ADD TODAY'S STORY",
-            style: TextStyle(
-                color: Colors.white, fontSize: 20, fontFamily: 'Raleway'),
-          ),
-        ],
-      ),
+      child: child
     );
   }
 }

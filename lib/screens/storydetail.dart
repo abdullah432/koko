@@ -6,7 +6,10 @@ import 'package:facebook_audience_network/ad/ad_native.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:kuku/widgets/imageslider.dart';
 import 'package:kuku/widgets/listofuserphotos.dart';
+import 'package:kuku/widgets/nonpremiumcontainer.dart';
+import 'package:kuku/widgets/premiumcontainer.dart';
 
 class StoryDetail extends StatefulWidget {
   final Story story;
@@ -38,174 +41,191 @@ class StoryDetailState extends State<StoryDetail> {
             Hero(
               tag: 'd',
               // tag: 'hero$currentIndex',
-              child: Container(
-                  color: Colors.black,
-                  child: SizedBox.expand(
-                    child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: Image(
-                          image: Constant.getImageAsset(story),
-                        )),
-                  )),
+              child: ImageSlider(
+                imageList: story.images,
+              ),
+              // Constant.primiumThemeSelected
+              //     ? PremiumContainer(
+              //         gradient: Constant.selectedGradient,
+              //         child: SizedBox.expand(),
+              //       )
+              //     : NonPremiumContainer(
+              //         color: Constant.selectedColor,
+              //         child: SizedBox.expand(),
+              //       ),
+              // Container(
+              //     color: Colors.black,
+              //     child: SizedBox.expand(
+              //       // child: FittedBox(
+              //       //     fit: BoxFit.cover,
+              //       //     child: Image(
+              //       //       image: Constant.getImageAsset(story),
+              //       //     )),
+              //     )),
             ),
-
             //Draggable Scrollable sheet
             DraggableScrollableSheet(
-              initialChildSize: 0.5,
-              minChildSize: 0.45,
+              initialChildSize: 0.659,
+              minChildSize: 0.650,
               builder: (context, controller) {
                 return SingleChildScrollView(
                   controller: controller,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, top: 0.0, bottom: 15.0),
-                        child: Text(
-                          formatDate(Constant.getActiveStoryDate(story.date),
-                              [dd, ' ', MM, ' ', yyyy]),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15.0, right: 15.0, bottom: 15.0),
-                        child: Text(
-                          story.title,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Raleway',
-                              fontSize: 26),
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10.0, right: 10.0, top: 30.0, bottom: 30.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //heading 1
-                              Text(
-                                'FEELING',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19.0),
-                              ),
-                              //space
-                              SizedBox(height: 10.0),
-                              Text(
-                                story.feeling,
-                                style: TextStyle(
-                                    // color: Colors.white,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19),
-                              ),
-                              //space
-                              SizedBox(height: 20.0),
-                              //heading 2
-                              Text(
-                                'REASON',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19.0),
-                              ),
-                              //space
-                              SizedBox(height: 10.0),
-                              Text(
-                                story.reason,
-                                style: TextStyle(
-                                    // color: Colors.white,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19),
-                              ),
-                              //space
-                              SizedBox(height: 20.0),
-                              //heading 3
-                              Text(
-                                'WHAT HAPPENED TODAY',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19.0),
-                              ),
-                              //space
-                              SizedBox(height: 10.0),
-                              Text(
-                                story.whatHappened != ''
-                                    ? story.whatHappened
-                                    : 'You choose to not record it',
-                                style: TextStyle(
-                                    // color: Colors.white,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 19),
-                              ),
-                              //space
-                              SizedBox(height: 20.0),
-                              _facebookNativeBannerAd(),
-                              //space
-                              SizedBox(height: 20.0),
-                              //heading 4
-                              story.note != null
-                                  ? Text(
-                                      'YOUR DAILY NOTES',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Raleway',
-                                          fontSize: 19.0),
-                                    )
-                                  : Container(height: 0.0),
-                              //space
-                              SizedBox(height: 10.0),
-                              story.note != null
-                                  ? Text(
-                                      story.note != ''
-                                          ? story.note
-                                          : 'You choose to not record it',
-                                      style: TextStyle(
-                                          // color: Colors.white,
-                                          fontFamily: 'Raleway',
-                                          fontSize: 19),
-                                    )
-                                  : Container(height: 0.0),
-                              //Photos
-                              story.images != null && story.images.length != 0
-                                  ? Text(
-                                      'YOUR PHOTOS',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Raleway',
-                                          fontSize: 19.0),
-                                    )
-                                  : Container(height: 0.0),
-                              story.images != null && story.images.length != 0
-                                  ? ListOfUserPhotos(
-                                      images: story.images,
-                                      onTap: (index) {
-                                        navigateToPhotoView(
-                                            story.images, index);
-                                      },
-                                    )
-                                  : Container(height: 0.0),
-                            ],
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10.0, right: 10.0, top: 30.0, bottom: 30.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'DATE',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Raleway',
+                                fontSize: 19.0),
                           ),
-                        ),
-                      )
-                    ],
+                          //space
+                          SizedBox(height: 10.0),
+                          Text(
+                            formatDate(Constant.getActiveStoryDate(story.date),
+                                [dd, ' ', MM, ' ', yyyy]),
+                            style: TextStyle(
+                              color: Colors.black,
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 19,
+                            ),
+                          ),
+                          SizedBox(height: 10.0,),
+                          Text(
+                            'TITLE',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Raleway',
+                                fontSize: 19.0),
+                          ),
+                          //space
+                          SizedBox(height: 10.0),
+                          Text(
+                            story.title,
+                            style: TextStyle(
+                              color: Colors.black,
+                              // fontWeight: FontWeight.bold,
+                              fontFamily: 'Raleway',
+                              fontSize: 19,
+                            ),
+                          ),
+                          SizedBox(height: 10.0,),
+                          //heading 1
+                          Text(
+                            'FEELING',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Raleway',
+                                fontSize: 19.0),
+                          ),
+                          //space
+                          SizedBox(height: 10.0),
+                          Text(
+                            story.feeling,
+                            style: TextStyle(
+                                // color: Colors.white,
+                                fontFamily: 'Raleway',
+                                fontSize: 19,),
+                          ),
+                          //space
+                          SizedBox(height: 20.0),
+                          //heading 2
+                          Text(
+                            'REASON',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Raleway',
+                                fontSize: 19.0),
+                          ),
+                          //space
+                          SizedBox(height: 10.0),
+                          Text(
+                            story.reason,
+                            style: TextStyle(
+                                // color: Colors.white,
+                                fontFamily: 'Raleway',
+                                fontSize: 19),
+                          ),
+                          //space
+                          SizedBox(height: 20.0),
+                          //heading 3
+                          Text(
+                            'WHAT HAPPENED TODAY',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Raleway',
+                                fontSize: 19.0),
+                          ),
+                          //space
+                          SizedBox(height: 10.0),
+                          Text(
+                            story.whatHappened != ''
+                                ? story.whatHappened
+                                : 'You choose to not record it',
+                            style: TextStyle(
+                                // color: Colors.white,
+                                fontFamily: 'Raleway',
+                                fontSize: 19),
+                          ),
+                          //space
+                          SizedBox(height: 20.0),
+                          _facebookNativeBannerAd(),
+                          //space
+                          SizedBox(height: 20.0),
+                          //heading 4
+                          story.note != null
+                              ? Text(
+                                  'YOUR DAILY NOTES',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Raleway',
+                                      fontSize: 19.0),
+                                )
+                              : Container(height: 0.0),
+                          //space
+                          SizedBox(height: 10.0),
+                          story.note != null
+                              ? Text(
+                                  story.note != ''
+                                      ? story.note
+                                      : 'You choose to not record it',
+                                  style: TextStyle(
+                                      // color: Colors.white,
+                                      fontFamily: 'Raleway',
+                                      fontSize: 19),
+                                )
+                              : Container(height: 0.0),
+                          //Photos
+                          story.images != null && story.images.length != 0
+                              ? Text(
+                                  'YOUR PHOTOS',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Raleway',
+                                      fontSize: 19.0),
+                                )
+                              : Container(height: 0.0),
+                          story.images != null && story.images.length != 0
+                              ? ListOfUserPhotos(
+                                  images: story.images,
+                                  onTap: (index) {
+                                    navigateToPhotoView(story.images, index);
+                                  },
+                                )
+                              : Container(height: 0.0),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },

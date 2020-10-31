@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:date_format/date_format.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kuku/model/Story.dart';
@@ -12,7 +11,7 @@ import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
 import 'package:flutter/material.dart';
-import 'package:kuku/widgets/facebookNativeInterstitialAd.dart';
+import 'package:kuku/widgets/addstorywidget.dart';
 import 'package:kuku/widgets/gradienticons.dart';
 import 'package:kuku/widgets/nonpremiumanimatedcontainer.dart';
 import 'package:kuku/widgets/premiumanimatedcontainer.dart';
@@ -51,6 +50,8 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    //after calling page, count will be zero so
+    if (GlobalData.storyList != null) count = GlobalData.storyList.length;
     super.initState();
     //now load user name and setting (one time per app use)
     if (!Constant.userDataLoaded) {
@@ -91,8 +92,6 @@ class HomePageState extends State<HomePage> {
       GlobalData.storyList = new List<Story>();
       updateStoryList();
     }
-    //after calling page, count will be zero so
-    count = GlobalData.storyList.length;
 
     return Scaffold(
         key: _scaffoldKey,
@@ -191,65 +190,99 @@ class HomePageState extends State<HomePage> {
             },
             child: Hero(
               tag: 'hero$currentIndex',
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeOutQuint,
-                height: height,
-                width: width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: Constant.getImageAsset(story),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.only(top: 15.0, left: 15.0),
-                              child: Container(
-                                width: 80,
-                                child: Text(
-                                  formatDate(
-                                      Constant.getActiveStoryDate(story.date),
-                                      [dd, ' ', MM, ' ', yyyy]),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17),
-                                ),
-                              )),
-                          FlatButton(
-                            onPressed: () {
-                              showDeleteAlert(story);
-                            },
-                            child: Icon(
-                              Icons.delete,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                          )
-                        ]),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 40, left: 20),
-                      child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text(
-                            getActiveStoryTitle(story),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          )),
+              child: Constant.primiumThemeSelected
+                  ? PremiumAnimatedContainer(
+                      height: height,
+                      width: width,
+                      child: storyContainer(story: story),
                     )
-                  ],
+                  : NonPremiumAnimatedContainer(
+                      height: height,
+                      width: width,
+                      child: storyContainer(story: story),
+                    ),
+            )));
+  }
+
+  Widget storyContainer({@required Story story}) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          SizedBox(height: 10),
+          //first row
+          dateAndDeleteBtnWidget(story),
+          //body text
+          Expanded(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(
+                  '${story.whatHappened}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                  maxLines: 10,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            )));
+            ),
+          ),
+          //title at bottom
+          Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  getActiveStoryTitle(story),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          )
+        ],
+      ),
+    );
+  }
+
+  dateAndDeleteBtnWidget(story) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            // width: 160,
+            child: Text(
+              formatDate(Constant.getActiveStoryDate(story.date),
+                  [dd, ' ', M, ' ', yyyy]),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          Flexible(
+            child: GestureDetector(
+              onTap: () {
+                showDeleteAlert(story);
+              },
+              // FlatButton(
+              //   onPressed: () {
+              //     showDeleteAlert(story);
+              //   },
+              child: Icon(
+                Icons.delete,
+                size: 30,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ]);
   }
 
   Widget introductryPage() {
@@ -333,8 +366,16 @@ class HomePageState extends State<HomePage> {
             child: Hero(
               tag: 'addstory',
               child: Constant.primiumThemeSelected
-                  ? PremiumAnimatedContainer(height: height, width: width)
-                  : NonPremiumAnimatedContainer(height: height, width: width),
+                  ? PremiumAnimatedContainer(
+                      height: height,
+                      width: width,
+                      child: AddStoryWidget(),
+                    )
+                  : NonPremiumAnimatedContainer(
+                      height: height,
+                      width: width,
+                      child: AddStoryWidget(),
+                    ),
             )));
   }
 
