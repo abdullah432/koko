@@ -1,4 +1,4 @@
-import 'package:kuku/screens/editstorypage.dart';
+import 'package:kuku/screens/home/editstorypage.dart';
 import 'package:kuku/screens/imageview.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:date_format/date_format.dart';
@@ -42,7 +42,7 @@ class StoryDetailState extends State<StoryDetail> {
               tag: 'd',
               // tag: 'hero$currentIndex',
               child: ImageSlider(
-                imageList: story.images,
+                story: story,
               ),
               // Constant.primiumThemeSelected
               //     ? PremiumContainer(
@@ -95,12 +95,15 @@ class StoryDetailState extends State<StoryDetail> {
                             formatDate(Constant.getActiveStoryDate(story.date),
                                 [dd, ' ', MM, ' ', yyyy]),
                             style: TextStyle(
-                              color: Colors.black,
+                              // color: Colors.black,
                               // fontWeight: FontWeight.bold,
+                              fontFamily: 'Raleway',
                               fontSize: 19,
                             ),
                           ),
-                          SizedBox(height: 10.0,),
+                          SizedBox(
+                            height: 10.0,
+                          ),
                           Text(
                             'TITLE',
                             style: TextStyle(
@@ -119,7 +122,9 @@ class StoryDetailState extends State<StoryDetail> {
                               fontSize: 19,
                             ),
                           ),
-                          SizedBox(height: 10.0,),
+                          SizedBox(
+                            height: 10.0,
+                          ),
                           //heading 1
                           Text(
                             'FEELING',
@@ -133,9 +138,10 @@ class StoryDetailState extends State<StoryDetail> {
                           Text(
                             story.feeling,
                             style: TextStyle(
-                                // color: Colors.white,
-                                fontFamily: 'Raleway',
-                                fontSize: 19,),
+                              // color: Colors.white,
+                              fontFamily: 'Raleway',
+                              fontSize: 19,
+                            ),
                           ),
                           //space
                           SizedBox(height: 20.0),
@@ -208,7 +214,7 @@ class StoryDetailState extends State<StoryDetail> {
                           //Photos
                           story.images != null && story.images.length != 0
                               ? Text(
-                                  'YOUR PHOTOS',
+                                  'IMAGES OF THE DAY',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontFamily: 'Raleway',

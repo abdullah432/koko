@@ -1,6 +1,6 @@
 import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/widgets/PhotoHero.dart';
-import 'package:kuku/screens/whatHappened.dart';
+import 'package:kuku/screens/addstory/whatHappened.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';

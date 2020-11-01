@@ -2,6 +2,7 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/widgets/PhotoHero.dart';
 import 'package:kuku/utils/constant.dart';
@@ -11,6 +12,7 @@ import 'package:kuku/widgets/premiumcontainer.dart';
 import 'feeling.dart';
 
 class AddStory extends StatefulWidget {
+  AddStory({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return AddStoryState();
@@ -44,12 +46,16 @@ class AddStoryState extends State<AddStory> {
                 top: minimumPadding * 8, right: minimumPadding * 4),
             child: Align(
               alignment: Alignment.topRight,
-              child: IconButton(
-                  icon: Image.asset('images/cancelwhite.png'),
-                  iconSize: 10,
-                  onPressed: () {
-                    moveToLastScreen();
-                  }),
+              child: GestureDetector(
+                onTap: () {
+                  moveToLastScreen();
+                },
+                child: Icon(
+                  FlutterIcons.cross_ent,
+                  size: 40,
+                  color: Colors.white,
+                ),
+              ),
             )),
         // Hero(tag: "logo", child: getLogoImage()),
         Padding(
@@ -71,7 +77,7 @@ class AddStoryState extends State<AddStory> {
               style: TextStyle(fontSize: 22, color: Colors.white)),
         ),
         Padding(
-          padding: EdgeInsets.only(top: minimumPadding * 20),
+          padding: EdgeInsets.only(top: minimumPadding * 15),
           child: FlatButton(
               onPressed: () {
                 DatePicker.showDatePicker(context,
@@ -100,7 +106,7 @@ class AddStoryState extends State<AddStory> {
                   ])),
         ),
         Padding(
-          padding: EdgeInsets.only(top: minimumPadding * 20),
+          padding: EdgeInsets.only(top: minimumPadding * 15),
           child: RaisedButton(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

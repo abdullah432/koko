@@ -20,7 +20,7 @@ class NonPremiumAnimatedContainer extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         color: Constant.selectedColor,
       ),
       child: child,

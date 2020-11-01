@@ -17,7 +17,7 @@ class PremiumAnimatedContainer extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
         gradient: Constant.selectedGradient,
       ),
       child: child

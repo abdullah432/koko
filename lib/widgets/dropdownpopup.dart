@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kuku/model/auth_provider.dart';
 import 'package:kuku/model/authentication.dart';
-import 'package:kuku/screens/add_story.dart';
-import 'package:kuku/screens/login_signup_page.dart';
+import 'package:kuku/screens/addstory/add_story.dart';
+import 'package:kuku/screens/authentication/login_signup_page.dart';
 import 'package:kuku/screens/settings/settingpage.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/widgets/gradienticons.dart';

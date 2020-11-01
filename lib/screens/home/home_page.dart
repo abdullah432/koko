@@ -4,9 +4,9 @@ import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kuku/model/Story.dart';
-import 'package:kuku/screens/add_story.dart';
+import 'package:kuku/screens/addstory/add_story.dart';
 import 'package:kuku/screens/settings/settingpage.dart';
-import 'package:kuku/screens/storydetail.dart';
+import 'package:kuku/screens/home/storydetail.dart';
 import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
@@ -19,7 +19,10 @@ import 'package:kuku/widgets/dropdownpopup.dart';
 
 class HomePage extends StatefulWidget {
   final bool storyAdded;
-  HomePage({this.storyAdded});
+  HomePage({
+    this.storyAdded,
+    Key key,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return HomePageState(storyAdded);
@@ -100,26 +103,23 @@ class HomePageState extends State<HomePage> {
           PageView.builder(
               scrollDirection: Axis.horizontal,
               controller: pageController,
-              itemCount: count >= 3 ? count + 3 : count + 2,
+              itemCount: count >= 3 ? count + 2 : count + 1,
               itemBuilder: (BuildContext context, int currentIndex) {
                 if (currentIndex == 0) {
                   return introductryPage();
-                } else if (currentIndex == 1) {
-                  // debugPrint(currentPage.toString());
+                } 
+                // else if (currentIndex == 1) {
+                //   // debugPrint(currentPage.toString());
+                //   bool active = currentIndex == currentPage;
+                //   return addNotePage(active);
+                // } 
+                else if (GlobalData.storyList.length + 1 == currentIndex) {
                   bool active = currentIndex == currentPage;
-                  return addNotePage(active);
-                } else if (GlobalData.storyList.length + 2 == currentIndex) {
-                  bool active = currentIndex == currentPage;
-                  // print("count: " + count.toString());
-                  // print("currentindex: " + currentIndex.toString());
                   return nativeStoryAd(active);
-                } else if (GlobalData.storyList.length + 1 >= currentIndex) {
-                  // debugPrint('StoryList Length' + storyList.length.toString());
-                  // debugPrint('currentIndex 1:' + currentIndex.toString());
+                } else if (GlobalData.storyList.length >= currentIndex) {
                   bool active = currentIndex == currentPage;
-                  // debugPrint('currentIndex 2:' + currentIndex.toString());
                   return storyPages(
-                    GlobalData.storyList[currentIndex - 2],
+                    GlobalData.storyList[currentIndex - 1],
                     active,
                     currentIndex,
                   );
@@ -137,7 +137,7 @@ class HomePageState extends State<HomePage> {
               )),
           //backward/forward button
           Positioned(
-            bottom: 35.0,
+            bottom: 20.0,
             right: 12.0,
             child: GestureDetector(
               onTap: () {
@@ -181,8 +181,8 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget storyPages(Story story, bool active, currentIndex) {
-    height = active ? 380 : 350;
-    width = active ? 300 : 250;
+    height = active ? 330 : 290;
+    width = active ? 275 : 250;
     return Center(
         child: GestureDetector(
             onTap: () {
@@ -205,47 +205,57 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget storyContainer({@required Story story}) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          SizedBox(height: 10),
-          //first row
-          dateAndDeleteBtnWidget(story),
-          //body text
-          Expanded(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Text(
-                  '${story.whatHappened}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                  maxLines: 10,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ),
-          //title at bottom
-          Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  getActiveStoryTitle(story),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
-          )
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: Constant.getImageAsset(story),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+            top: 25.0, left: 15.0, right: 15.0, bottom: 15.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            // SizedBox(height: 10),
+            //first row
+            dateAndDeleteBtnWidget(story),
+            // //body text
+            // Expanded(
+            //   child: Align(
+            //     alignment: Alignment.topLeft,
+            //     child: Padding(
+            //       padding: const EdgeInsets.only(top: 12.0),
+            //       child: Text(
+            //         '${story.whatHappened}',
+            //         style: TextStyle(
+            //           fontSize: 17,
+            //           color: Colors.white,
+            //         ),
+            //         maxLines: 10,
+            //         overflow: TextOverflow.ellipsis,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            //title at bottom
+            Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    getActiveStoryTitle(story),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 21,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -342,8 +352,8 @@ class HomePageState extends State<HomePage> {
     // final double h = active ? 390 : 370;
     // final double w = active ? 300 : 240;
     if (!buttonDown) {
-      height = active ? 380 : 350;
-      width = active ? 300 : 250;
+      height = active ? 330 : 290;
+      width = active ? 260 : 200;
     }
 
     return Center(
@@ -351,7 +361,7 @@ class HomePageState extends State<HomePage> {
             onTapDown: (TapDownDetails details) => addNewStoryBtnClick(),
             onTap: () {
               setState(() {
-                height = 370;
+                height = 290;
                 width = 282;
                 buttonDown = true;
               });
@@ -497,7 +507,7 @@ class HomePageState extends State<HomePage> {
       if (this.mounted) {
         setState(() {
           print('index to be updated: ' + currentIndex.toString());
-          GlobalData.storyList[currentIndex - 2] = returnStory;
+          GlobalData.storyList[currentIndex - 1] = returnStory;
           print('story is edited on detail page');
         });
       }

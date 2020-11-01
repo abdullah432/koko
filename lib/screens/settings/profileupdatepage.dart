@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kuku/screens/home_page.dart';
+import 'package:kuku/screens/home/home_page.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/utils/customfirestore.dart';
 import 'package:kuku/widgets/nonpremiumcontainer.dart';

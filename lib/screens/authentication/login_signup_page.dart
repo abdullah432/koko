@@ -11,7 +11,7 @@ import 'package:kuku/widgets/premiumcontainer.dart';
 import 'package:kuku/widgets/nonpremiumcontainer.dart';
 import 'forgotpasswordpage.dart';
 
-import 'home_page.dart';
+import '../home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
