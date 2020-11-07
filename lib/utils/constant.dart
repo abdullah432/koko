@@ -31,6 +31,8 @@ class Constant {
   static Color color4 = Color.fromRGBO(10, 49, 128, 1.0);
   static Color color5 = Color.fromRGBO(30, 32, 41, 1.0);
 
+  static Color communitystorybgcolor = Color.fromRGBO(240, 240, 240, 1);
+
   static List<Color> listOfColors = [color1, color2, color3, color4, color5];
   static List<LinearGradient> listOfPremium = [
     GradientColors.gradient1,

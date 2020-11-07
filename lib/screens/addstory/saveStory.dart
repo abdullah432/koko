@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:kuku/widgets/nonpremiumcontainer.dart';
 import 'package:kuku/widgets/premiumcontainer.dart';
 
+import '../bottomnavigationbar.dart';
+
 class SaveStory extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -208,10 +210,7 @@ class SaveStoryState extends State {
 
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    storyAdded: true,
-                  )),
+          MaterialPageRoute(builder: (context) => MyBottomNavBarPage()),
           (Route<dynamic> route) => false);
 
       // if (result == 'success') {

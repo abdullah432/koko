@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:kuku/model/authentication.dart';
-import 'package:kuku/styles/gradientcolors.dart';
+import 'package:kuku/screens/bottomnavigationbar.dart';
 import 'package:kuku/utils/bubble_indication_painter.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:kuku/widgets/nonpremiumbutton.dart';
@@ -10,8 +10,6 @@ import 'package:kuku/widgets/premiumbutton.dart';
 import 'package:kuku/widgets/premiumcontainer.dart';
 import 'package:kuku/widgets/nonpremiumcontainer.dart';
 import 'forgotpasswordpage.dart';
-
-import '../home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -650,7 +648,7 @@ class _LoginPageState extends State<LoginPage>
       BaseAuth auth = new Auth();
       String result = await auth.signInWithGoogle();
       print(result);
-      navigateAndReplace(page: HomePage());
+      navigateAndReplace(page: MyBottomNavBarPage());
     } on PlatformException catch (e) {
       print(e.details.toString());
       print(e.message);
@@ -686,7 +684,7 @@ class _LoginPageState extends State<LoginPage>
       BaseAuth auth = new Auth();
       String result = await auth.signInWithFacebook();
       if (result == 'success') {
-        navigateAndReplace(page: HomePage());
+        navigateAndReplace(page: MyBottomNavBarPage());
       } else {
         signinWaiting = false;
         signupWaiting = false;
@@ -723,7 +721,7 @@ class _LoginPageState extends State<LoginPage>
         if (uid != null) {
           print('hi');
           Constant.useruid = uid;
-          navigateAndReplace(page: HomePage());
+          navigateAndReplace(page: MyBottomNavBarPage());
         }
       } catch (error) {
         print('error during signin: ' + error.toString());

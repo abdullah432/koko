@@ -532,7 +532,7 @@ class HomePageState extends State<HomePage> {
         buttonTitleColor: Colors.white,
         buttonBorderColor: Colors.white,
         keepAlive:
-            true, //set true if you do not want adview to refresh on widget rebuild
+            false, //set true if you do not want adview to refresh on widget rebuild
         keepExpandedWhileLoading:
             false, // set false if you want to collapse the native ad view when the ad is loading
         expandAnimationDuraion:

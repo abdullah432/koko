@@ -345,7 +345,7 @@ class EditStoryPageState extends State<EditStoryPage> {
                   Center(
                     child: RaisedButton(
                       onPressed: () async {
-                        int deleteImagesSize;
+                        int deleteImagesSize = 0;
                         //before updating first check any changes in images
                         if (deleteImages.length > 0) {
                           //delete image from storage first

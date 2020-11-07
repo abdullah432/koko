@@ -8,6 +8,7 @@ class Story {
   String _whatHappened;
   String _note;
   List<dynamic> _images;
+  List<String> _likes;
   int _imagesSize;
   DocumentReference reference;
 
@@ -26,6 +27,7 @@ class Story {
   String get note => this._note;
   List<dynamic> get images => this._images;
   int get imagesSize => this._imagesSize;
+  List<String> get likes => this._likes;
 
   set title(String title) {
     this._title = title;
@@ -59,6 +61,10 @@ class Story {
     this._imagesSize = size;
   }
 
+  set likes(likes) {
+    this._likes = likes;
+  }
+
   Story.fromMap(Map<String, dynamic> map, {this.reference})
       : _title = map['title'],
         _date = map['date'],
@@ -66,8 +72,9 @@ class Story {
         _reason = map['reason'],
         _whatHappened = map['whatHappened'],
         _note = map['note'],
-        _images = map['images'] != null ? map['images'] : null,
-        _imagesSize = map['imagesSize'] != null ? map['imagesSize'] : 0;
+        _images = map['images'] != null ? map['images'] : [],
+        _imagesSize = map['imagesSize'] != null ? map['imagesSize'] : 0,
+        _likes = map['likes'] != null ? map['likes'] : [];
 
   Story.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
