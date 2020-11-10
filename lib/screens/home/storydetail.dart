@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kuku/screens/home/editstorypage.dart';
 import 'package:kuku/screens/imageview.dart';
 import 'package:kuku/utils/constant.dart';
@@ -6,6 +7,7 @@ import 'package:facebook_audience_network/ad/ad_native.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:kuku/utils/customfirestore.dart';
 import 'package:kuku/widgets/imageslider.dart';
 import 'package:kuku/widgets/listofuserphotos.dart';
 import 'package:kuku/widgets/nonpremiumcontainer.dart';
@@ -237,17 +239,25 @@ class StoryDetailState extends State<StoryDetail> {
               },
             ),
             Positioned(
-                right: 10,
-                top: 30,
-                child: Padding(
+              right: 10,
+              top: 30,
+              child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: IconButton(
-                    onPressed: () {
-                      navigateToEditStory();
-                    },
-                    icon: Icon(Icons.edit, color: Colors.yellow, size: 30),
-                  ),
-                )),
+                  child: Row(children: [
+                    IconButton(
+                      onPressed: () {
+                        _showMyDialog();
+                      },
+                      icon: Icon(Icons.share, color: Colors.yellow, size: 30),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        navigateToEditStory();
+                      },
+                      icon: Icon(Icons.edit, color: Colors.yellow, size: 30),
+                    ),
+                  ])),
+            ),
           ],
         ),
       ),
@@ -304,5 +314,47 @@ class StoryDetailState extends State<StoryDetail> {
       Navigator.pop(context, story);
     else
       return Future.value(true);
+  }
+
+  //alert dialog
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Share Your Story'),
+          content: Text('Are you sure you want to public your story'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Share'),
+              onPressed: () async {
+                if (story.whatHappened.length > 10) {
+                  CustomFirestore customFirestore = CustomFirestore();
+                  bool result = await customFirestore.shareUserPostToFireStore(
+                      story: story);
+                  if (result) {
+                    Fluttertoast.showToast(msg: "Story shared successfully");
+                  } else {
+                    Fluttertoast.showToast(msg: "Unexpected Error occured");
+                  }
+                } else {
+                  Fluttertoast.showToast(
+                      msg: "Story text must be greater than 10 characters");
+                }
+
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

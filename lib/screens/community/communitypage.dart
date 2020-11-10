@@ -1,12 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:kuku/model/Post.dart';
 import 'package:kuku/model/Story.dart';
+import 'package:kuku/screens/community/commentspage.dart';
+import 'package:kuku/screens/community/communitystorydetail.dart';
 import 'package:kuku/utils/GlobalData.dart';
 import 'package:kuku/utils/constant.dart';
+import 'package:kuku/utils/customfirestore.dart';
+import 'package:kuku/utils/navigation.dart';
 import 'package:kuku/widgets/likeAndcommentRow.dart';
-
-import '../imageview.dart';
+import 'package:kuku/widgets/photoGridView.dart';
 
 class CommunityPage extends StatefulWidget {
   CommunityPage({Key key}) : super(key: key);
@@ -16,9 +20,54 @@ class CommunityPage extends StatefulWidget {
 }
 
 class _CommunityPageState extends State<CommunityPage> {
-  List<Story> listOfStories = GlobalData.storyList;
+  List<Post> listOfStories;
+  //when data is loading we will show progress animation
+  bool storiesloading = true;
+  //storage
+  CustomFirestore customFirestore = CustomFirestore();
+
+  @override
+  void initState() {
+    loadPublicStoriesData();
+    super.initState();
+  }
+
+  loadPublicStoriesData() async {
+    if (GlobalData.publicStoryList == null) {
+      //load data
+      GlobalData.publicStoryList =
+          await customFirestore.loadPublicStoriesData();
+      listOfStories = GlobalData.publicStoryList;
+    } else {
+      listOfStories = GlobalData.publicStoryList;
+    }
+    setState(() {
+      storiesloading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (storiesloading) {
+      return Center(
+          child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Constant.selectedColor),
+      ));
+    } else {
+      return mainBody();
+    }
+    // return StreamBuilder(
+    //   stream: FirebaseFirestore.instance.collection('posts').doc().snapshots(),
+    //   builder: (context, snapshot) {
+    //     if (!snapshot.hasData)
+    //       return Center(child: CircularProgressIndicator());
+    //     final int cardLength = snapshot.data.documents.length;
+    //     return mainbody();
+    //   },
+    // );
+  }
+
+  mainBody() {
     return listOfStories.length != 0
         ? ListView.builder(
             // Let the ListView know how many items it needs to build.
@@ -26,7 +75,7 @@ class _CommunityPageState extends State<CommunityPage> {
             // Provide a builder function. This is where the magic happens.
             // Convert each item into a widget based on the type of item it is.
             itemBuilder: (context, index) {
-              final story = listOfStories[index];
+              final publicstory = listOfStories[index];
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
@@ -39,19 +88,19 @@ class _CommunityPageState extends State<CommunityPage> {
                     child: Column(
                       children: [
                         //title and feeling
-                        titleANDfeelingRow(story),
+                        titleANDfeelingRow(publicstory),
                         //space
                         SizedBox(height: 10.0),
                         //story text
-                        storyTextDetailWidget(story),
+                        storyTextDetailWidget(publicstory),
                         //read more
-                        readMoreButton(story.whatHappened.length),
+                        readMoreButton(publicstory),
                         //  Text('${story.whatHappened}')),
                         //space
                         SizedBox(height: 10.0),
                         //photos gridview
-                        story.images != null
-                            ? photosGridView(story.images)
+                        publicstory.images != null
+                            ? photosGridView(publicstory.images)
                             : Container(
                                 height: 0.0,
                               ),
@@ -59,8 +108,14 @@ class _CommunityPageState extends State<CommunityPage> {
                         SizedBox(height: 10.0),
                         //reaction section widget
                         ReactionSectionWidget(
-                          onLikeClick: (value) => _onLikeClick(value, story),
-                          story: story,
+                          onLikeClick: (likeStatus) =>
+                              _onLikeClick(likeStatus, publicstory),
+                          onCommentClick: () => Navigation.navigateTo(
+                            context,
+                            CommunityCommentPage(),
+                          ),
+                          publicstory: publicstory,
+                          customFirestore: customFirestore,
                         )
                       ],
                     ),
@@ -74,7 +129,7 @@ class _CommunityPageState extends State<CommunityPage> {
           );
   }
 
-  titleANDfeelingRow(Story story) {
+  titleANDfeelingRow(story) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -87,7 +142,7 @@ class _CommunityPageState extends State<CommunityPage> {
     );
   }
 
-  storyTextDetailWidget(Story story) {
+  storyTextDetailWidget(story) {
     return Align(
       alignment: Alignment.topLeft,
       child: Container(
@@ -101,12 +156,15 @@ class _CommunityPageState extends State<CommunityPage> {
     );
   }
 
-  readMoreButton(textlength) {
-    return textlength > 90
+  readMoreButton(story) {
+    return story.whatHappened.length > 90
         ? Align(
             alignment: Alignment.topRight,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigation.navigateTo(
+                    context, CommunityStoryDetail(story: story));
+              },
               child: Text(
                 'read more',
                 style: TextStyle(color: Colors.blueAccent),
@@ -119,56 +177,14 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 
   photosGridView(images) {
-    return images.length != 0
-        ? GridView.count(
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 15.0,
-            mainAxisSpacing: 15.0,
-            // Create a grid with 2 columns. If you change the scrollDirection to
-            // horizontal, this produces 2 rows.
-            crossAxisCount: images.length > 1 ? 2 : 1,
-            shrinkWrap: true,
-            children: List.generate(images.length, (index) {
-              return GestureDetector(
-                onTap: () {
-                  navigateToPhotoView(images, index);
-                },
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: CachedNetworkImage(
-                      imageUrl: images[index],
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Container(
-                              // height: 200,
-                              // width: 120,
-                              child: Center(
-                        child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
-                      )),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    )),
-              );
-            }),
-          )
-        : Container(height: 0.0);
+    return PhotoGridView(
+      images: images,
+      onTap: (index) => Navigation.navigateToPhotoView(
+          context: context, images: images, index: index),
+    );
   }
 
-  navigateToPhotoView(images, index) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MyPhotoView(
-                  galleryItems: images,
-                  backgroundDecoration: const BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  initialIndex: index,
-                  scrollDirection: Axis.horizontal,
-                )));
-  }
-
-  getCurrentStoryIcon(Story story) {
+  getCurrentStoryIcon(story) {
     if (story.feeling == 'HAPPY')
       return Icon(
         FlutterIcons.smile_faw5,
@@ -182,16 +198,17 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 
   //logic
-  _onLikeClick(value, Story story) {
-    if (value) {
+  _onLikeClick(likeStatus, Post publicStory) {
+    customFirestore.updateLikeState(likedState: likeStatus, postid: publicStory.postid);
+    if (likeStatus) {
       //add like
       setState(() {
-        story.likes.add(Constant.useruid);
+        publicStory.totallikes++;
       });
     } else {
       //remove like
       setState(() {
-        story.likes.remove(Constant.useruid);
+        publicStory.totallikes--;
       });
     }
   }

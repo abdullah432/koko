@@ -1,3 +1,4 @@
+import 'package:kuku/model/Post.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
@@ -10,4 +11,5 @@ class GlobalData {
   static List<Asset> images;
 
   static List<Story> storyList;
+  static List<Post> publicStoryList;
 }

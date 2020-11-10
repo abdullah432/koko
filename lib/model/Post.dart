@@ -1,33 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Story {
+class Post {
   String _title;
   String _date;
   String _feeling;
   String _reason;
   String _whatHappened;
-  String _note;
   List<dynamic> _images;
-  List<String> _likes;
-  int _imagesSize;
+  int _totallikes;
+  int _totalcomments;
   DocumentReference reference;
 
-  Story(
-      this._title, this._date, this._feeling, this._reason, this._whatHappened,
-      [this._images, this._imagesSize, this._note]);
-  Story.withID(
-      this._title, this._date, this._feeling, this._reason, this._whatHappened,
-      [this._images, this._imagesSize, this._note]);
+  Post(this._title, this._date, this._feeling, this._reason, this._whatHappened,
+      this._totallikes, this._totalcomments,
+      [this._images]);
+  Post.withID(this._title, this._date, this._feeling, this._reason,
+      this._whatHappened, this._totallikes, this._totalcomments,
+      [this._images]);
 
   String get title => this._title;
   String get date => this._date;
   String get feeling => this._feeling;
   String get reason => this._reason;
   String get whatHappened => this._whatHappened;
-  String get note => this._note;
   List<dynamic> get images => this._images;
-  int get imagesSize => this._imagesSize;
-  List<String> get likes => this._likes;
+  int get totallikes => this._totallikes;
+  int get totalcomments => this._totalcomments;
+  String get postid => this.reference.id;
 
   set title(String title) {
     this._title = title;
@@ -49,33 +48,25 @@ class Story {
     this._whatHappened = text;
   }
 
-  set note(String note) {
-    this._note = note;
-  }
-
   set images(images) {
     this._images = images;
   }
 
-  set imagesSize(size) {
-    this._imagesSize = size;
+  set totallikes(value) {
+    this._totallikes = value;
   }
 
-  set likes(likes) {
-    this._likes = likes;
-  }
-
-  Story.fromMap(Map<String, dynamic> map, {this.reference})
+  Post.fromMap(Map<String, dynamic> map, {this.reference})
       : _title = map['title'],
         _date = map['date'],
         _feeling = map['feeling'],
         _reason = map['reason'],
         _whatHappened = map['whatHappened'],
-        _note = map['note'],
         _images = map['images'] != null ? map['images'] : [],
-        _imagesSize = map['imagesSize'] != null ? map['imagesSize'] : 0,
-        _likes = map['totallikes'] != null ? map['likes'] : [];
+        _totalcomments =
+            map['totalcomments'] != null ? map['totalcomments'] : 0,
+        _totallikes = map['totallikes'] != null ? map['totallikes'] : 0;
 
-  Story.fromSnapshot(DocumentSnapshot snapshot)
+  Post.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

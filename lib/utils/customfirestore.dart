@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:kuku/model/Post.dart';
 import 'package:kuku/model/Story.dart';
 import 'package:kuku/utils/constant.dart';
 import 'package:meta/meta.dart';
@@ -153,6 +154,94 @@ class CustomFirestore {
     return true;
   }
 
+  //public stories
+  loadPublicStoriesData() async {
+    // QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("posts").get();
+    // var list = querySnapshot.docs;
+
+    QuerySnapshot querySnapshot = await db.collection('posts').get();
+
+    Post post;
+    List<Post> listOfPosts = List();
+
+    querySnapshot.docs.forEach((DocumentSnapshot snapshot) async{
+      post = Post.fromSnapshot(snapshot);
+      QuerySnapshot isPostLiked = await db.collection('posts').doc(post.postid).collection('list1').where(Constant.useruid, isEqualTo: true).get();
+      if(isPostLiked.docs.contains(Constant.useruid)) {
+        print('isPostLiked: true');
+      } else {
+        print('isPostLiked: false');
+      }
+      listOfPosts.add(post);
+    });
+
+    return listOfPosts;
+  }
+
+  //share post
+  Future<bool> shareUserPostToFireStore({@required Story story}) async {
+    db.collection('posts').doc().set({
+      'title': story.title,
+      'date': story.date,
+      'feeling': story.feeling,
+      'reason': story.reason,
+      'whatHappened': story.whatHappened,
+      'images': story.images,
+      'createdby': Constant.useruid,
+      'totallikes': 0,
+      'totalcomments': 0,
+    }).whenComplete(() {
+      print('complete');
+      return true;
+    }).catchError((error) {
+      print('error during adding service: ' + error.toString());
+      return false;
+    });
+    return true;
+  }
+
+  //is post like by user
+  isPostLiked({@required postid}) async {
+    final DocumentSnapshot docSnap = await db
+        .collection("posts")
+        .doc(postid)
+        .collection('likedbyusers')
+        .doc('list1')
+        .get();
+    if (docSnap.data().containsKey(Constant.useruid)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  //update like
+  updateLikeState({@required likedState, @required postid}) {
+    if (likedState) {
+      //increment
+      final DocumentReference docRef = db.collection("posts").doc(postid);
+      docRef.update({"totallikes": FieldValue.increment(1)});
+      //add to subcollection likebyusers
+      db
+          .collection('posts')
+          .doc(postid)
+          .collection('likedbyusers')
+          .doc('list1')
+          .set({Constant.useruid: true});
+    } else {
+      //decrement
+      final DocumentReference docRef = db.collection("posts").doc(postid);
+      docRef.update({"totallikes": FieldValue.increment(-1)});
+      //add to subcollection likebyusers
+      db
+          .collection('posts')
+          .doc(postid)
+          .collection('likedbyusers')
+          .doc('list1')
+          .update({Constant.useruid: FieldValue.delete()});
+    }
+  }
+
   deleteUserImagesFromFirebaseStorage(images) async {
     try {
       int deletedImagesSize = 0;
@@ -171,11 +260,11 @@ class CustomFirestore {
     }
   }
 
-  deleteSingleImageFromStorage({@required imageURL}) async{
+  deleteSingleImageFromStorage({@required imageURL}) async {
     try {
-        StorageReference ref =
-            await FirebaseStorage().getReferenceFromUrl(imageURL);
-        ref.delete();
+      StorageReference ref =
+          await FirebaseStorage().getReferenceFromUrl(imageURL);
+      ref.delete();
     } catch (error) {
       print('deleteUserImagesFromFirebaseStorage: ' + error.toString());
     }
